@@ -176,7 +176,7 @@ inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v)
     uniq.reserve(v.size());
 
     for (int val : v)
-        if (!Rcpp::is_na(val))
+        if (!Rcpp::IntegerVector::is_na(val))
             uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
@@ -190,7 +190,7 @@ inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v)
     // 3. Encode each observation
     for (int val : v)
     {
-        if (Rcpp::is_na(val))
+        if (Rcpp::IntegerVector::is_na(val))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
