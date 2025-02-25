@@ -88,7 +88,7 @@ inline std::vector<uint8_t> index2base4(uint64_t idx);
  *  vec2pat
  *
  *  Convert an R vector (Integer / Numeric / Character)
- *  into InfoTheo::PatternSeries.
+ *  into std::vector<std::vector<uint8_t>>.
  *
  *  Design:
  *      - Extract unique non NA values
@@ -98,7 +98,7 @@ inline std::vector<uint8_t> index2base4(uint64_t idx);
  *      - Each observation becomes one Pattern
  *
  *  Result:
- *      PatternSeries of size N
+ *      PatternSeries of size N (std::vector<std::vector<uint8_t>>)
  *      Each Pattern contains base 4 digits representing category
  *
  *  NA handling:
@@ -107,13 +107,13 @@ inline std::vector<uint8_t> index2base4(uint64_t idx);
  ********************************************************************/
 
 // -------- IntegerVector --------
-inline InfoTheo::PatternSeries vec2pat(const Rcpp::IntegerVector& v);
+inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v);
 
 // -------- NumericVector --------
-inline InfoTheo::PatternSeries vec2pat(const Rcpp::NumericVector& v);
+inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::NumericVector& v);
 
 // -------- CharacterVector --------
-inline InfoTheo::PatternSeries vec2pat(const Rcpp::CharacterVector& v);
+inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v);
 
 /********************************************************************
  *  mat2patmat
