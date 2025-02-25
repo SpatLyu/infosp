@@ -251,7 +251,7 @@ inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
 
     for (Rcpp::String s : v)
         if (s != NA_STRING)
-            uniq.push_back(Rcpp::as<std::string>(s));
+            uniq.push_back(std::string(s));
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
@@ -268,7 +268,7 @@ inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
         }
         else
         {
-            uint64_t idx = dict[Rcpp::as<std::string>(s)];
+            uint64_t idx = dict[std::string(s)];
             series.push_back( index2base4(idx) );
         }
     }
