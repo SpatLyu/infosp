@@ -64,4 +64,24 @@ inline std::vector<std::vector<size_t>> nb2std(const Rcpp::List& nb);
 // Function to convert std::vector<std::vector<size_t>> (the `nb` object) to Rcpp::List
 inline Rcpp::List std2nb(const std::vector<std::vector<size_t>>& nb);
 
+/********************************************************************
+ *  index2base4
+ *
+ *  Convert a non negative integer index into base 4 representation.
+ *
+ *  Each base 4 digit is stored in one uint8_t.
+ *  Only the lowest 2 bits of each uint8_t are meaningful.
+ *
+ *  Example:
+ *      idx = 6
+ *      base 4 = 12
+ *      stored as {2,1}  (little endian)
+ *
+ *  This design allows unlimited categorical cardinality while
+ *  remaining fully compatible with the 2 bit packing scheme
+ *  used inside InfoTheo.
+ *
+ ********************************************************************/
+inline std::vector<uint8_t> index2base4(uint64_t idx);
+
 #endif // DataTrans_H
