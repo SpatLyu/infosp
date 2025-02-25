@@ -56,7 +56,7 @@
  ********************************************************************/
 
 // Function to convert Rcpp::List to std::vector<std::vector<size_t>> (the `nb` object)
-std::vector<std::vector<size_t>> nb2std(const Rcpp::List& nb) {
+inline std::vector<std::vector<size_t>> nb2std(const Rcpp::List& nb) {
   // Get the number of elements in the nb object
   size_t n = static_cast<size_t>(nb.size());
   if (n <= 1) {
@@ -90,7 +90,7 @@ std::vector<std::vector<size_t>> nb2std(const Rcpp::List& nb) {
 }
 
 // Function to convert std::vector<std::vector<size_t>> (the `nb` object) to Rcpp::List
-Rcpp::List std2nb(const std::vector<std::vector<size_t>>& nb) {
+inline Rcpp::List std2nb(const std::vector<std::vector<size_t>>& nb) {
   size_t n = nb.size();
   Rcpp::List result(n);
 
