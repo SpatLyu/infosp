@@ -250,7 +250,7 @@ inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
     uniq.reserve(v.size());
 
     for (Rcpp::String s : v)
-        if (!Rcpp::is_na(s))
+        if (s != NA_STRING)
             uniq.push_back(Rcpp::as<std::string>(s));
 
     std::sort(uniq.begin(), uniq.end());
@@ -262,7 +262,7 @@ inline std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
 
     for (Rcpp::String s : v)
     {
-        if (Rcpp::is_na(s))
+        if (s == NA_STRING)
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
