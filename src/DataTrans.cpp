@@ -143,7 +143,6 @@ inline std::vector<uint8_t> index2base4(uint64_t idx)
     return digits; // little endian base 4
 }
 
-
 /********************************************************************
  *  vec2pat
  *

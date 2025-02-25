@@ -84,4 +84,35 @@ inline Rcpp::List std2nb(const std::vector<std::vector<size_t>>& nb);
  ********************************************************************/
 inline std::vector<uint8_t> index2base4(uint64_t idx);
 
+/********************************************************************
+ *  vec2pat
+ *
+ *  Convert an R vector (Integer / Numeric / Character)
+ *  into InfoTheo::PatternSeries.
+ *
+ *  Design:
+ *      - Extract unique non NA values
+ *      - Sort from low to high
+ *      - Assign increasing index 0,1,2,...
+ *      - Encode index in base 4
+ *      - Each observation becomes one Pattern
+ *
+ *  Result:
+ *      PatternSeries of size N
+ *      Each Pattern contains base 4 digits representing category
+ *
+ *  NA handling:
+ *      NA is encoded as single digit {0}
+ *
+ ********************************************************************/
+
+// -------- IntegerVector --------
+inline InfoTheo::PatternSeries vec2pat(const Rcpp::IntegerVector& v);
+
+// -------- NumericVector --------
+inline InfoTheo::PatternSeries vec2pat(const Rcpp::NumericVector& v);
+
+// -------- CharacterVector --------
+inline InfoTheo::PatternSeries vec2pat(const Rcpp::CharacterVector& v);
+
 #endif // DataTrans_H
