@@ -130,7 +130,7 @@ inline InfoTheo::PatternSeries vec2pat(const Rcpp::IntegerVector& v)
     uniq.reserve(v.size());
 
     for (int val : v)
-        if (val != NA_INTEGER)
+        if (!Rcpp::is_na(val))
             uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
@@ -144,7 +144,7 @@ inline InfoTheo::PatternSeries vec2pat(const Rcpp::IntegerVector& v)
     // 3. Encode each observation
     for (int val : v)
     {
-        if (val == NA_INTEGER)
+        if (Rcpp::is_na(val))
         {
             series.push_back( InfoTheo::Pattern{0} );
         }
@@ -168,7 +168,7 @@ inline InfoTheo::PatternSeries vec2pat(const Rcpp::NumericVector& v)
     uniq.reserve(v.size());
 
     for (double val : v)
-        if (!Rcpp::NumericVector::is_na(val))
+        if (!Rcpp::is_na(val))
             uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
@@ -180,7 +180,7 @@ inline InfoTheo::PatternSeries vec2pat(const Rcpp::NumericVector& v)
 
     for (double val : v)
     {
-        if (Rcpp::NumericVector::is_na(val))
+        if (Rcpp::is_na(val))
         {
             series.push_back( InfoTheo::Pattern{0} );
         }
@@ -204,7 +204,7 @@ inline InfoTheo::PatternSeries vec2pat(const Rcpp::CharacterVector& v)
     uniq.reserve(v.size());
 
     for (Rcpp::String s : v)
-        if (s != NA_STRING)
+        if (!Rcpp::is_na(s))
             uniq.push_back(Rcpp::as<std::string>(s));
 
     std::sort(uniq.begin(), uniq.end());
@@ -216,7 +216,7 @@ inline InfoTheo::PatternSeries vec2pat(const Rcpp::CharacterVector& v)
 
     for (Rcpp::String s : v)
     {
-        if (s == NA_STRING)
+        if (Rcpp::is_na(s))
         {
             series.push_back( InfoTheo::Pattern{0} );
         }
