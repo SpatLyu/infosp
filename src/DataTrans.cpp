@@ -5,6 +5,7 @@
 #include <iterator>
 #include <numeric>
 #include <algorithm>
+#include <unordered_map> 
 #include "infotheo.hpp"
 #include <Rcpp.h>
 
