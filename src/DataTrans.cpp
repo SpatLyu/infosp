@@ -317,7 +317,7 @@ inline std::vector<std::vector<std::vector<uint8_t>>> mat2patmat(SEXP x)
 
             for (size_t j = 0; j < p; ++j)
             {
-                Rcpp::IntegerVector col = m(_, j);
+                Rcpp::IntegerVector col = m(Rcpp::_, j);
                 mat.push_back(vec2pat(col));
             }
 
@@ -332,7 +332,7 @@ inline std::vector<std::vector<std::vector<uint8_t>>> mat2patmat(SEXP x)
 
             for (size_t j = 0; j < p; ++j)
             {
-                Rcpp::NumericVector col = m(_, j);
+                Rcpp::NumericVector col = m(Rcpp::_, j);
                 mat.push_back(vec2pat(col));
             }
 
@@ -347,7 +347,7 @@ inline std::vector<std::vector<std::vector<uint8_t>>> mat2patmat(SEXP x)
 
             for (size_t j = 0; j < p; ++j)
             {
-                Rcpp::CharacterVector col = m(_, j);
+                Rcpp::CharacterVector col = m(Rcpp::_, j);
                 mat.push_back(vec2pat(col));
             }
 
