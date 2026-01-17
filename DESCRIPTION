@@ -1,5 +1,5 @@
 Package: infosp
-Title: Information-Theoretic Measures for Spatial Pattern
+Title: Information-Theoretic Measures for Spatial Data
 Version: 0.0.0.9000
 Authors@R: 
     person("Wenbo", "Lv", , "lyu.geosocial@gmail.com", role = c("aut", "cre"),
