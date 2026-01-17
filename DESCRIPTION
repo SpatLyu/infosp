@@ -1,11 +1,34 @@
 Package: infosp
-Title: What the Package Does (One Line, Title Case)
+Title: Information-Theoretic Measures for Spatial Data
 Version: 0.0.0.9000
-Authors@R: 
-    person("Wenbo", "Lv", , "lyu.geosocial@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0009-0002-6003-3800"))
-Description: What the package does (one paragraph).
+Authors@R: c(
+      person(given = "Wenbo", family = "Lv",
+             email = "lyu.geosocial@gmail.com", 
+             role = c("aut", "cre", "cph"),
+             comment = c(ORCID = "0009-0002-6003-3800")),
+      person(given = "Yangyang", family = "Lei",
+             email = "lz20230678@163.com", 
+             role = c("aut"),
+             comment = c(ORCID = "0009-0002-6518-3613"))
+    )
+Description: Integrating phase space reconstruction, symbolic dynamics, and information-theoretic methods to enable spatially explicit analysis of geometric and attribute information in spatial data. Supports univariate spatial complexity assessment, bivariate spatial association evaluation, and multivariate spatial interaction characterization via tailored information-theoretic measures.
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+URL: https://stscl.github.io/infosp/, https://github.com/stscl/infosp
+BugReports: https://github.com/stscl/infosp/issues
+Depends: 
+    R (>= 4.1.0)
+LinkingTo: 
+    Rcpp
+Imports: 
+    dplyr,
+    ggplot2,
+    methods,
+    sdsfun (>= 0.7.0),
+    sf,
+    terra
+Suggests: 
+    Rcpp,
+    readr
