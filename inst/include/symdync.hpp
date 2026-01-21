@@ -1,6 +1,6 @@
 /***************************************************************
  *
- *  File: SymDync.hpp
+ *  File: symdync.hpp
  *
  *  Symbolic Dynamics Utilities for High Performance
  *  Pattern Construction and Encoding.

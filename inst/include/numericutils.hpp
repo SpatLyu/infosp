@@ -1,5 +1,5 @@
 /**
- * @file NumericUtils.hpp
+ * @file numericutils.hpp
  * @brief Utility functions for safe and consistent floating-point operations.
  *
  * Provides helper functions for:
