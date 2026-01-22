@@ -8,7 +8,7 @@
  *
  * Intended for scientific computation where double precision stability matters.
  *
- * Author: Wenbo Lv
+ * Author: Wenbo Lv (Github: @SpatLyu)
  * License: GPL-3
  */
 

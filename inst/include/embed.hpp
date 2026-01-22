@@ -25,7 +25,7 @@
  *    - Header only implementation
  *    - Robust NaN propagation
  *
- *  Author: Wenbo Lv
+ *  Author: Wenbo Lv (Github: @SpatLyu)
  *  License: GPL-3
  *
  ***************************************************************/
@@ -36,6 +36,7 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+#include <numeric>
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
@@ -78,53 +79,92 @@ inline NeighborMat LaggedNeighbors(
         for (size_t i = 0; i < n; ++i) {
             result[i] = { i };
         }
-        return result;
-    }
+    } else if (lag >= n - 1) {
+        std::vector<size_t> v(n);
+        std::iota(v.begin(), v.end(), size_t{0});
+        for (size_t i = 0; i < n; ++i) {
+            result[i] = v;
+        }
+    } else {
+        NeighborMat prev = LaggedNeighbors(nb, lag - 1);
 
-    NeighborMat prev = LaggedNeighbors(nb, lag - 1);
-
-    for (size_t i = 0; i < n; ++i) {
-        std::unordered_set<size_t> merged;
-        merged.reserve(prev[i].size() + nb[i].size());
-
-        for (size_t v : prev[i]) {
-            merged.insert(v);
-            for (size_t u : nb[v]) {
-                merged.insert(u);
+        for (size_t i = 0; i < n; ++i) {
+            if (prev[i].size() == n) {
+                result[i] = prev[i]
+            } else {
+                std::unordered_set<size_t> merged;
+                merged.reserve(prev[i].size() + nb[i].size());
+                for (size_t v : prev[i]) {
+                    merged.insert(v);
+                    for (size_t u : nb[v]) {
+                        merged.insert(u);
+                    }
+                }
+                result[i].assign(merged.begin(), merged.end());
+                std::sort(result[i].begin(), result[i].end());
             }
         }
-
-        result[i].assign(merged.begin(), merged.end());
-        std::sort(result[i].begin(), result[i].end());
     }
+    
     return result;
 }
 
 /**
  * @brief Extract lagged values from a lattice vector.
  *
- * Each node collects values from its lagged neighbors.
+ * Each node collects values from its lagged neighbors (no recursively included).
  */
 inline Matrix LaggedValues(
     const Vector& vec,
     const NeighborMat& nb,
     size_t lag
 ) {
-    NeighborMat neighbors = LaggedNeighbors(nb, lag);
-    const size_t n = neighbors.size();
-
+    const size_t n = nb.size();
     Matrix out(n);
-    for (size_t i = 0; i < n; ++i) {
-        out[i].reserve(neighbors[i].size());
-        for (size_t j : neighbors[i]) {
-            out[i].push_back(vec[j]);
+
+    if (lag == 0) {
+        for (size_t i = 0; i < n; ++i) {
+            out[i] = { vec[i] };
+        }
+    } else if (lag >= n - 1) {
+        for (size_t i = 0; i < n; ++i) {
+            out[i] = vec;
+        }
+    } else {
+        // Remove duplicates with previous lag (if lag > 1)
+        NeighborMat prevNeighbors = LaggedNeighbors(nb, lag-1);
+
+        for (size_t i = 0; i < n; ++i) {
+            // Convert previous lagged results to a set for fast lookup
+            std::unordered_set<size_t> prevSet(prevNeighbors[i].begin(), prevNeighbors[i].end());
+            // Remove duplicates from previous lagged results
+            std::vector<size_t> newIndices;
+            for (size_t prev_nb in prevSet){
+                for (size_t cur_nb : nb[prev_nb]) {
+                    if (prevSet.find(cur_nb) == prevSet.end()) {
+                        newIndices.push_back(cur_nb);
+                    }
+                }
+            }
+
+            // Fill the lagged values
+            if (newIndices.empty()) {
+                out[i] = { std::numeric_limits<double>::quiet_NaN() };
+            } else {
+                // std::sort(newIndices.begin(), newIndices.end()); // no need to sorted
+                out[i].reserve(newIndices.size());
+                for (size_t j : newIndices) {
+                    out[i].push_back(vec[j]);
+                }
+            }
         }
     }
+    
     return out;
 }
 
 /**
- * @brief Generate lattice embeddings by averaging lagged neighbors.
+ * @brief Generate lattice embeddings by averaging lagged neighbor values.
  *
  * Parameters:
  *   vec    Node values.
@@ -145,37 +185,91 @@ inline Matrix LatticeEmbedding(
     const size_t n = vec.size();
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
-    Matrix embed(n, Vector(E, NaN));
-    std::unordered_map<size_t, NeighborMat> cache;
-
-    auto get_neighbors = [&](size_t lag) -> const NeighborMat& {
-        auto it = cache.find(lag);
-        if (it != cache.end()) return it->second;
-        return cache.emplace(lag, LaggedNeighbors(nb, lag)).first->second;
-    };
-
     size_t start = (style == 0 ? 0 : (tau == 0 ? 0 : tau));
     size_t step  = (tau == 0 ? 1 : tau);
     size_t end   = (tau == 0 ? E - 1 :
                    (style == 0 ? (E - 1) * tau : E * tau));
+    end = std::min(end, n - 1);
+
+    Matrix embed(n, Vector(E, NaN));
+    std::unordered_map<size_t, NeighborMat> cache;
+    cache.reserve(end + 1);
+
+    if (start == 0){
+        cache.emplace(start, LaggedNeighbors(nb, start)); 
+    } else {
+        cache.emplace(start-1, LaggedNeighbors(nb, start-1));
+    }
+    
+    for (size_t lag = start; lag <= end; lag += 1) {
+        if (cache.find(lag) == cache.end()){
+            auto it = cache.find(lag-1);
+            // assert(it != cache.end());
+            const NeighborMat &prev = it->second;
+
+            NeighborMat cur(n);
+            for (size_t i = 0; i < n; ++i) {
+                if (prev[i].size() == n) {
+                    cur[i] = prev[i];
+                } else {
+                    std::unordered_set<size_t> merged;
+                    merged.reserve(prev[i].size() + nb[i].size());
+                    for (size_t v : prev[i]) {
+                        merged.insert(v);
+                        for (size_t u : nb[v]) {
+                            merged.insert(u);
+                        }
+                    }
+                    cur[i].assign(merged.begin(), merged.end());
+                    std::sort(cur[i].begin(), cur[i].end());
+                }
+            }
+
+            cache.emplace(lag, std::move(cur));
+        }
+    }
 
     for (size_t lag = start; lag <= end; lag += step) {
-        const NeighborMat& cur = get_neighbors(lag);
+        if (lag == 0) {
+            for (size_t i = 0; i < n; ++i) {
+                embed[i][0] = vec[i];
+            }
+            continue;
+        }
+
+        const NeighborMat& cur  = cache.at(lag);
+        const NeighborMat& prev = cache.at(lag - 1);
+
         const size_t col = (lag - start) / step;
 
         for (size_t i = 0; i < n; ++i) {
             double sum = 0.0;
             size_t cnt = 0;
 
-            for (size_t j : cur[i]) {
-                double v = vec[j];
-                if (!std::isnan(v)) {
-                    sum += v;
-                    ++cnt;
+            const auto& A = cur[i];
+            const auto& B = prev[i];
+
+            auto itA = A.begin();
+            auto itB = B.begin();
+
+            while (itA != A.end()) {
+                if (itB == B.end() || *itA < *itB) {
+                    double v = vec[*itA];
+                    if (!std::isnan(v)) {
+                        sum += v;
+                        ++cnt;
+                    }
+                    ++itA;
+                } else if (*itB < *itA) {
+                    ++itB;
+                } else {
+                    ++itA;
+                    ++itB;
                 }
             }
+
             if (cnt > 0) {
-                embed[i][col] = sum / cnt;
+                embed[i][col] = sum / cnt; // valid lagged value
             }
         }
     }
@@ -359,7 +453,7 @@ inline Matrix GridEmbedding(
     }
 
     /* remove all-NaN columns */
-    std::vector<Index> validCols;
+    std::vector<size_t> validCols;
     for (size_t c = 0; c < embed.front().size(); ++c) {
         bool allNaN = true;
         for (size_t r = 0; r < embed.size(); ++r) {
