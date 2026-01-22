@@ -185,14 +185,14 @@ inline Matrix LatticeEmbedding(
     const size_t n = vec.size();
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
-    Matrix embed(n, Vector(E, NaN));
-    std::unordered_map<size_t, NeighborMat> cache;
-    cache.reserve(end + 1);
-
     size_t start = (style == 0 ? 0 : (tau == 0 ? 0 : tau));
     size_t step  = (tau == 0 ? 1 : tau);
     size_t end   = (tau == 0 ? E - 1 :
                    (style == 0 ? (E - 1) * tau : E * tau));
+
+    Matrix embed(n, Vector(E, NaN));
+    std::unordered_map<size_t, NeighborMat> cache;
+    cache.reserve(end + 1);
 
     if (start == 0){
         cache.emplace(start, LaggedNeighbors(nb, start)); 
