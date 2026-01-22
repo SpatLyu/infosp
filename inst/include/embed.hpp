@@ -90,7 +90,7 @@ inline NeighborMat LaggedNeighbors(
 
         for (size_t i = 0; i < n; ++i) {
             if (prev[i].size() == n) {
-                result[i] = prev[i]
+                result[i] = prev[i];
             } else {
                 std::unordered_set<size_t> merged;
                 merged.reserve(prev[i].size() + nb[i].size());
