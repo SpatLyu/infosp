@@ -189,6 +189,7 @@ inline Matrix LatticeEmbedding(
     size_t step  = (tau == 0 ? 1 : tau);
     size_t end   = (tau == 0 ? E - 1 :
                    (style == 0 ? (E - 1) * tau : E * tau));
+    end = std::min(end, n - 1);
 
     Matrix embed(n, Vector(E, NaN));
     std::unordered_map<size_t, NeighborMat> cache;
@@ -208,7 +209,7 @@ inline Matrix LatticeEmbedding(
             NeighborMat cur(n);
             for (size_t i = 0; i < n; ++i) {
                 if (prev[i].size() == n) {
-                    cur[i] = prev[i]
+                    cur[i] = prev[i];
                 } else {
                     std::unordered_set<size_t> merged;
                     merged.reserve(prev[i].size() + nb[i].size());
@@ -223,14 +224,14 @@ inline Matrix LatticeEmbedding(
                 }
             }
 
-            cache.emplace(lag, std::move(cur))
+            cache.emplace(lag, std::move(cur));
         }
     }
 
     for (size_t lag = start; lag <= end; lag += step) {
         if (lag == 0) {
             for (size_t i = 0; i < n; ++i) {
-                embed[i][0] = vec[0];
+                embed[i][0] = vec[i];
             }
             continue;
         }
