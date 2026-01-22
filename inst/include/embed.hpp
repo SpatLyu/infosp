@@ -133,7 +133,6 @@ inline Matrix LaggedValues(
     } else {
         // Remove duplicates with previous lag (if lag > 1)
         NeighborMat prevNeighbors = LaggedNeighbors(nb, lag-1);
-        NeighborMat curNeighbors(n);
 
         for (size_t i = 0; i < n; ++i) {
             // Convert previous lagged results to a set for fast lookup
@@ -148,19 +147,15 @@ inline Matrix LaggedValues(
                 }
             }
 
-            // If the new indices are empty, set it to a special value (e.g., std::numeric_limits<int>::min())
+            // Fill the lagged values
             if (newIndices.empty()) {
-                newIndices.push_back(std::numeric_limits<int>::min());
-            }
-
-            // Update the lagged results
-            curNeighbors[i] = newIndices;
-        }
-        
-        for (size_t i = 0; i < n; ++i) {
-            out[i].reserve(curNeighbors[i].size());
-            for (size_t j :  curNeighbors[i]) {
-                out[i].push_back(vec[j]);
+                out[i] = { std::numeric_limits<double>::quiet_NaN() };
+            } else {
+                std::sort(newIndices.begin(), newIndices.end());
+                out[i].reserve(newIndices.size());
+                for (size_t j : newIndices) {
+                    out[i].push_back(vec[j]);
+                }
             }
         }
     }
