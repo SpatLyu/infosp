@@ -228,8 +228,15 @@ inline Matrix LatticeEmbedding(
     }
 
     for (size_t lag = start; lag <= end; lag += step) {
+        if (lag == 0) {
+            for (size_t i = 0; i < n; ++i) {
+                embed[i][0] = vec[0];
+            }
+            continue;
+        }
+
         const NeighborMat& cur  = cache.at(lag);
-        const NeighborMat& prev = (lag > 0 ? cache.at(lag - 1) : cur);
+        const NeighborMat& prev = cache.at(lag - 1);
 
         const size_t col = (lag - start) / step;
 
@@ -238,7 +245,7 @@ inline Matrix LatticeEmbedding(
             size_t cnt = 0;
 
             const auto& A = cur[i];
-            const auto& B = (lag > 0 ? prev[i] : std::vector<size_t>{});
+            const auto& B = prev[i];
 
             auto itA = A.begin();
             auto itB = B.begin();
