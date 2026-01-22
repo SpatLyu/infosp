@@ -25,7 +25,7 @@
  *    - Header only implementation
  *    - Robust NaN propagation
  *
- *  Author: Wenbo Lv
+ *  Author: Wenbo Lv (Github: @SpatLyu)
  *  License: GPL-3
  *
  ***************************************************************/
@@ -164,7 +164,7 @@ inline Matrix LaggedValues(
 }
 
 /**
- * @brief Generate lattice embeddings by averaging lagged neighbors.
+ * @brief Generate lattice embeddings by averaging lagged neighbor values.
  *
  * Parameters:
  *   vec    Node values.
