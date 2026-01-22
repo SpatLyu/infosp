@@ -188,16 +188,50 @@ inline Matrix LatticeEmbedding(
     Matrix embed(n, Vector(E, NaN));
     std::unordered_map<size_t, NeighborMat> cache;
 
+    size_t start = (style == 0 ? 0 : (tau == 0 ? 0 : tau));
+    size_t step  = (tau == 0 ? 1 : tau);
+    size_t end   = (tau == 0 ? E - 1 :
+                   (style == 0 ? (E - 1) * tau : E * tau));
+
+    if (start == 0){
+        cache.emplace(start, LaggedNeighbors(nb, start)); 
+    } else {
+        cache.emplace(start-1, LaggedNeighbors(nb, start-1));
+    }
+    
+    for (size_t lag = start; lag <= end; lag += 1) {
+        if (cache.find(lag) == cache.end()){
+            auto it = cache.find(lag-1);
+            const NeighborMat &prev = it->second;
+
+            NeighborMat cur(n);
+            for (size_t i = 0; i < n; ++i) {
+                if (prev[i].size() == n) {
+                    cur[i] = prev[i]
+                } else {
+                    std::unordered_set<size_t> merged;
+                    merged.reserve(prev[i].size() + nb[i].size());
+                    for (size_t v : prev[i]) {
+                        merged.insert(v);
+                        for (size_t u : nb[v]) {
+                            merged.insert(u);
+                        }
+                    }
+                    cur[i].assign(merged.begin(), merged.end());
+                    std::sort(cur[i].begin(), cur[i].end());
+                }
+            }
+
+            cache.emplace(lag, std::move(cur))
+        }
+    }
+
     auto get_neighbors = [&](size_t lag) -> const NeighborMat& {
         auto it = cache.find(lag);
         if (it != cache.end()) return it->second;
         return cache.emplace(lag, LaggedNeighbors(nb, lag)).first->second;
     };
 
-    size_t start = (style == 0 ? 0 : (tau == 0 ? 0 : tau));
-    size_t step  = (tau == 0 ? 1 : tau);
-    size_t end   = (tau == 0 ? E - 1 :
-                   (style == 0 ? (E - 1) * tau : E * tau));
 
     for (size_t lag = start; lag <= end; lag += step) {
         const NeighborMat& cur = get_neighbors(lag);
