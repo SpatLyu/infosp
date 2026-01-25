@@ -31,3 +31,20 @@ std::vector<std::vector<size_t>> nb2std(const Rcpp::List& nb) {
 
   return result;
 }
+
+// Function to convert std::vector<std::vector<size_t>> (the `nb` object) to Rcpp::List
+Rcpp::List std2nb(const std::vector<std::vector<size_t>>& nb) {
+  size_t n = nb.size();
+  Rcpp::List result(n);
+
+  for (size_t i = 0; i < n; ++i) {
+    const auto& neighbors = nb[i];
+    Rcpp::IntegerVector r_neighbors(neighbors.size());
+    for (size_t j = 0; j < neighbors.size(); ++j) {
+      r_neighbors[j] = static_cast<int>(neighbors[j] + 1);
+    }
+    result[i] = r_neighbors;
+  }
+
+  return result;
+}
