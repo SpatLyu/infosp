@@ -68,7 +68,7 @@ using Matrix       = std::vector<Vector>;
  *
  * No sentinel values are used. Empty neighbor sets remain empty.
  */
-inline NeighborMat LaggedNeighbors(
+inline NeighborMat LaggedNeighbors4Lattice(
     const NeighborMat& nb,
     size_t lag
 ) {
@@ -86,7 +86,7 @@ inline NeighborMat LaggedNeighbors(
             result[i] = v;
         }
     } else {
-        NeighborMat prev = LaggedNeighbors(nb, lag - 1);
+        NeighborMat prev = LaggedNeighbors4Lattice(nb, lag - 1);
 
         for (size_t i = 0; i < n; ++i) {
             if (prev[i].size() == n) {
@@ -114,7 +114,7 @@ inline NeighborMat LaggedNeighbors(
  *
  * Each node collects values from its lagged neighbors (no recursively included).
  */
-inline Matrix LaggedValues(
+inline Matrix LaggedValues4Lattice(
     const Vector& vec,
     const NeighborMat& nb,
     size_t lag
@@ -132,7 +132,7 @@ inline Matrix LaggedValues(
         }
     } else {
         // Remove duplicates with previous lag (if lag > 1)
-        NeighborMat prevNeighbors = LaggedNeighbors(nb, lag-1);
+        NeighborMat prevNeighbors = LaggedNeighbors4Lattice(nb, lag-1);
 
         for (size_t i = 0; i < n; ++i) {
             // Convert previous lagged results to a set for fast lookup
@@ -175,7 +175,7 @@ inline Matrix LaggedValues(
  *
  * Columns containing only NaN values are removed automatically.
  */
-inline Matrix LatticeEmbedding(
+inline Matrix GenLatticeEmbedding(
     const Vector& vec,
     const NeighborMat& nb,
     size_t E = 3,
@@ -196,9 +196,9 @@ inline Matrix LatticeEmbedding(
     cache.reserve(end + 1);
 
     if (start == 0){
-        cache.emplace(start, LaggedNeighbors(nb, start));
+        cache.emplace(start, LaggedNeighbors4Lattice(nb, start));
     } else {
-        cache.emplace(start-1, LaggedNeighbors(nb, start-1));
+        cache.emplace(start-1, LaggedNeighbors4Lattice(nb, start-1));
     }
 
     for (size_t lag = start; lag <= end; lag += 1) {
@@ -356,7 +356,7 @@ inline Matrix GridVecToMat(const Vector& vec, size_t nrow) {
 /**
  * @brief Compute lagged Moore neighborhood values on a grid.
  */
-inline Matrix LaggedGridValues(
+inline Matrix LaggedValues4Grid(
     const Matrix& mat,
     size_t lag
 ) {
@@ -408,7 +408,7 @@ inline Matrix LaggedGridValues(
 /**
  * @brief Generate grid spatial embeddings.
  */
-inline Matrix GridEmbedding(
+inline Matrix GenGridEmbedding(
     const Matrix& mat,
     size_t E = 3,
     size_t tau = 1,
@@ -424,7 +424,7 @@ inline Matrix GridEmbedding(
     Matrix embed(total, Vector(E, NaN));
 
     auto fill_column = [&](size_t col, size_t lag) {
-        Matrix lagged = LaggedGridValues(mat, lag);
+        Matrix lagged = LaggedValues4Grid(mat, lag);
         for (size_t i = 0; i < lagged.size(); ++i) {
             double sum = 0.0;
             size_t cnt = 0;
