@@ -581,7 +581,6 @@ inline Matrix GenGridEmbedding(
           "No valid embeddings can be generated."
       );
     }
-
     if (validCols.size() == embed.front().size()) return embed;
 
     Matrix filtered(total);
@@ -663,7 +662,7 @@ inline Matrix GenTSEmbedding(
   const double NaN = std::numeric_limits<double>::quiet_NaN();
 
   // Preallocate embedding matrix: N rows, E columns
-  Matrix mat(N, std::vector<double>(E, NaN));
+  Matrix emb(N, std::vector<double>(E, NaN));
 
   for (size_t t = 0; t < N; ++t) {
     for (size_t j = 0; j < E; ++j) {
@@ -678,7 +677,7 @@ inline Matrix GenTSEmbedding(
       }
 
       if(t >= lag) {
-        mat[t][j] = vec[t - lag];
+        emb[t][j] = vec[t - lag];
         // else leave NaN
       }
     }
@@ -689,35 +688,27 @@ inline Matrix GenTSEmbedding(
   keep.reserve(E);
   for (size_t j = 0; j < E; ++j) {
     for (size_t i = 0; i < N; ++i) {
-      if (!std::isnan(mat[i][j])) {
+      if (!std::isnan(emb[i][j])) {
         keep.push_back(j);
         break;
       }
     }
   }
 
-  // If no columns remain, throw exception
-  bool any_column = false;
-  if (!keep.empty()){
-    any_column = true;
-  }
-  if (!any_column) {
+  if (keep.empty()) {
     throw std::invalid_argument(
-        "Embedding dimension E and lag step tau are too large for input length, "
-        "no valid embeddings can be generated."
+        "No valid embeddings can be generated."
     );
   }
+  if (keep.size() == E) return emb;
 
   // Create cleaned matrix with only columns having valid data
-  std::vector<std::vector<double>> cleaned;
+  Matrix cleaned;
   for (size_t i = 0; i < N; ++i) {
-    std::vector<double> row;
-    for (size_t j = 0; j < E; ++j) {
-      if (keep[j]) {
-        row.push_back(mat[i][j]);
-      }
+    cleaned[i].reserve(keep.size());
+    for (size_t j : keep) {
+      cleaned[i].push_back(emb[i][j]);
     }
-    cleaned.push_back(row);
   }
 
   return cleaned;
