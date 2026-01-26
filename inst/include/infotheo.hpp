@@ -31,12 +31,13 @@
 #define INFOTHEO_HPP
 
 #include <vector>
-#include <unordered_map>
 #include <cmath>
 #include <limits>
 #include <cstdint>
 #include <algorithm>
 #include <stdexcept>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace InfoTheo
 {
@@ -224,7 +225,17 @@ namespace InfoTheo
         if (mat.empty() || vars.empty())
             return std::numeric_limits<double>::quiet_NaN();
 
-        const size_t n_obs = mat[vars[0]].size();
+        const size_t n_obs = mat[0].size();
+        const size_t n_cols = mat.size();
+
+        std::unordered_set<size_t> valid_vars;
+        valid_vars.reserve(vars.size());
+        for (size_t idx : vars) {
+          if (idx < n_cols) {
+            valid_vars.insert(idx);
+          }
+        }
+        std::vector<size_t> clean_vars(valid_vars.begin(), valid_vars.end());
 
         std::unordered_map<PackedKey, size_t, PackedKeyHash> freq;
         freq.reserve(n_obs * 1.3);
@@ -234,7 +245,7 @@ namespace InfoTheo
 
         for (size_t i = 0; i < n_obs; ++i)
         {
-            if (!pack_observation(mat, vars, i, key, NA_rm))
+            if (!pack_observation(mat, clean_vars, i, key, NA_rm))
                 continue;
 
             ++freq[key];
