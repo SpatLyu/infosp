@@ -421,29 +421,36 @@ inline Matrix GenGridEmbedding(
     const size_t total = rows * cols;
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
-    Matrix embed(total, Vector(E, NaN));
-
     /* -------------------------------------------------------
-     Clamp lag to avoid unnecessary oversized neighborhoods
-     Maximum meaningful lag in a grid is max(rows, cols) - 1
+     Compute maximum meaningful lag for this grid
+     Moore neighborhood cannot exceed this radius
      ------------------------------------------------------- */
     const size_t maxLag =
     (std::max(rows, cols) > 0 ? std::max(rows, cols) - 1 : 0);
 
-    auto clamp_lag = [&](size_t lag) -> size_t {
-      return (lag > maxLag ? maxLag : lag);
-    };
+    /* -------------------------------------------------------
+     Clamp embedding dimension E so that all generated lags
+     are guaranteed to be within [0, maxLag] and overflow-free
+     ------------------------------------------------------- */
+    size_t maxE = 0;
 
-    /* ---------------------------------------
-     Safe multiplication with overflow guard
-     --------------------------------------- */
-    auto safe_mul_lag = [&](size_t a, size_t b) -> size_t {
-      if (a == 0 || b == 0) return 0;
-      if (a > std::numeric_limits<size_t>::max() / b) {
-        return maxLag;   // overflow -> clamp
-      }
-      return clamp_lag(a * b);
-    };
+    if (tau == 0) {
+      /* lag(k) = k, k in [0, E-1] */
+      maxE = maxLag + 1;
+    }
+    else if (style == 0) {
+      /* lag(k) = k * tau, k in [1, E-1] */
+      maxE = maxLag / tau + 1;
+    }
+    else {
+      /* lag(k) = (k + 1) * tau, k in [0, E-1] */
+      maxE = maxLag / tau;
+    }
+
+    if (maxE == 0) return {};
+    if (E > maxE) E = maxE;
+
+    Matrix embed(total, Vector(E, NaN));
 
     // /*
     //  * Repeats the grid data with a lag offset. The implementation is straightforward
@@ -469,21 +476,19 @@ inline Matrix GenGridEmbedding(
      Cache offsets per lag
      ------------------------- */
     std::unordered_map<size_t, std::vector<std::pair<int,int>>> offsetCache;
-    offsetCache.reserve(E + 2);
+    offsetCache.reserve(E + 1);
 
     auto get_offsets = [&](size_t lag)
       -> const std::vector<std::pair<int,int>>&
       {
-        const size_t effLag = clamp_lag(lag);
-
-        auto it = offsetCache.find(effLag);
+        auto it = offsetCache.find(lag);
         if (it != offsetCache.end()) return it->second;
 
         std::vector<std::pair<int,int>> offsets;
-        if (effLag == 0) {
+        if (lag == 0) {
           offsets.emplace_back(0, 0);
         } else {
-          const int L = static_cast<int>(effLag);
+          const int L = static_cast<int>(lag);
           for (int dx = -L; dx <= L; ++dx) {
             for (int dy = -L; dy <= L; ++dy) {
               if (std::max(std::abs(dx), std::abs(dy)) == L) {
@@ -493,7 +498,7 @@ inline Matrix GenGridEmbedding(
           }
         }
 
-        auto res = offsetCache.emplace(effLag, std::move(offsets));
+        auto res = offsetCache.emplace(lag, std::move(offsets));
         return res.first->second;
       };
 
@@ -526,7 +531,7 @@ inline Matrix GenGridEmbedding(
           if (cnt > 0) {
             embed[id][col] = sum / cnt;
           }
-          // else: keep NaN
+          // else keep NaN
         }
       }
     };
