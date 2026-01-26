@@ -165,7 +165,6 @@ inline std::vector<std::vector<double>> GenSignatureSpace(
     return result;
 }
 
-
 /**
  * @brief Converts a continuous signature space matrix into a discrete
  *        pattern representation using compact uint8 encoding.
