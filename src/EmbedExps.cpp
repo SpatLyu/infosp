@@ -148,7 +148,7 @@ Rcpp::NumericMatrix RcppGenGridEmbedding(const Rcpp::NumericMatrix& mat,
   return result;
 }
 
-// Wrapper function to generate time-delay embeddings for a univariate time series
+// Wrapper function to generate time-delay embedding for a uni-variate time series
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericMatrix RcppGenTSEmbedding(const Rcpp::NumericVector& vec,
                                        int E = 3,

@@ -31,12 +31,13 @@
 #define INFOTHEO_HPP
 
 #include <vector>
-#include <unordered_map>
 #include <cmath>
 #include <limits>
 #include <cstdint>
 #include <algorithm>
 #include <stdexcept>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace InfoTheo
 {
@@ -48,8 +49,8 @@ namespace InfoTheo
      * Utilities
      ***********************************************************/
     inline double convert_log_base(double x, double base)
-    {   
-        if (x <= 0.0) return 0.0; 
+    {
+        if (x <= 0.0) return 0.0;
         if (!(base > 0.0) || std::abs(base - 1.0) < 1e-12)
         {
           throw std::invalid_argument("Log base must be positive and not equal to 1.");
@@ -224,7 +225,17 @@ namespace InfoTheo
         if (mat.empty() || vars.empty())
             return std::numeric_limits<double>::quiet_NaN();
 
-        const size_t n_obs = mat[vars[0]].size();
+        const size_t n_obs = mat[0].size();
+        const size_t n_cols = mat.size();
+
+        std::unordered_set<size_t> valid_vars;
+        valid_vars.reserve(vars.size());
+        for (size_t idx : vars) {
+          if (idx < n_cols) {
+            valid_vars.insert(idx);
+          }
+        }
+        std::vector<size_t> clean_vars(valid_vars.begin(), valid_vars.end());
 
         std::unordered_map<PackedKey, size_t, PackedKeyHash> freq;
         freq.reserve(n_obs * 1.3);
@@ -234,7 +245,7 @@ namespace InfoTheo
 
         for (size_t i = 0; i < n_obs; ++i)
         {
-            if (!pack_observation(mat, vars, i, key, NA_rm))
+            if (!pack_observation(mat, clean_vars, i, key, NA_rm))
                 continue;
 
             ++freq[key];
@@ -263,6 +274,13 @@ namespace InfoTheo
         double base = 2.0,
         bool NA_rm = false)
     {
+        if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
+
+        if (conds.empty())
+        {
+          throw std::invalid_argument("The conds parameter can not be empty.");
+        }
+
         std::vector<size_t> tc = conds;
         tc.insert(tc.end(), target.begin(), target.end());
 
@@ -279,6 +297,8 @@ namespace InfoTheo
         double base = 2.0,
         bool NA_rm = false)
     {
+        if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
+
         double sum_h = 0.0;
         for (size_t v : target)
             sum_h += Entropy(mat[v], base, NA_rm);
@@ -298,6 +318,13 @@ namespace InfoTheo
         double base = 2.0,
         bool NA_rm = false)
     {
+        if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
+
+        if (interact.empty() || conds.empty())
+        {
+          throw std::invalid_argument("The interact / conds parameter can not be empty.");
+        }
+
         std::vector<size_t> ct  = conds;
         std::vector<size_t> ci  = conds;
         std::vector<size_t> cti = conds;
