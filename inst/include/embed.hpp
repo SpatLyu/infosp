@@ -431,8 +431,7 @@ inline Matrix GenGridEmbedding(
      Compute maximum meaningful lag for this grid
      Moore neighborhood cannot exceed this radius
      ------------------------------------------------------- */
-    const size_t maxLag =
-    (std::max(rows, cols) > 0 ? std::max(rows, cols) - 1 : 0);
+    const size_t maxLag = std::max(rows, cols) - 1;
 
     /* -------------------------------------------------------
      Clamp embedding dimension E so that all generated lags
