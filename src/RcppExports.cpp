@@ -71,6 +71,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppGenTSEmbedding
+Rcpp::NumericMatrix RcppGenTSEmbedding(const Rcpp::NumericVector& vec, int E, int tau, int style);
+RcppExport SEXP _infosp_RcppGenTSEmbedding(SEXP vecSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type vec(vecSEXP);
+    Rcpp::traits::input_parameter< int >::type E(ESEXP);
+    Rcpp::traits::input_parameter< int >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< int >::type style(styleSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenTSEmbedding(vec, E, tau, style));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppLaggedNeighbors4Lattice", (DL_FUNC) &_infosp_RcppLaggedNeighbors4Lattice, 2},
@@ -78,6 +91,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppGenLatticeEmbedding", (DL_FUNC) &_infosp_RcppGenLatticeEmbedding, 5},
     {"_infosp_RcppLaggedValues4Grid", (DL_FUNC) &_infosp_RcppLaggedValues4Grid, 2},
     {"_infosp_RcppGenGridEmbedding", (DL_FUNC) &_infosp_RcppGenGridEmbedding, 4},
+    {"_infosp_RcppGenTSEmbedding", (DL_FUNC) &_infosp_RcppGenTSEmbedding, 4},
     {NULL, NULL, 0}
 };
 

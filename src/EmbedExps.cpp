@@ -147,3 +147,32 @@ Rcpp::NumericMatrix RcppGenGridEmbedding(const Rcpp::NumericMatrix& mat,
 
   return result;
 }
+
+// Wrapper function to generate time-delay embeddings for a univariate time series
+// [[Rcpp::export(rng = false)]]
+Rcpp::NumericMatrix RcppGenTSEmbedding(const Rcpp::NumericVector& vec,
+                                       int E = 3,
+                                       int tau = 1,
+                                       int style = 0) {
+  // Convert Rcpp::NumericVector to std::vector<double>
+  std::vector<double> vec_std = Rcpp::as<std::vector<double>>(vec);
+
+  // Generate embeddings
+  std::vector<std::vector<double>> embeddings =
+    Embed::GenTSEmbedding(vec_std,
+                          static_cast<size_t>(std::abs(E)),
+                          static_cast<size_t>(std::abs(tau)),
+                          static_cast<size_t>(std::abs(style)));
+
+  // Convert std::vector<std::vector<double>> to Rcpp::NumericMatrix
+  int rows = embeddings.size();
+  int cols = embeddings[0].size();
+  Rcpp::NumericMatrix result(rows, cols);
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      result(i, j) = embeddings[i][j];
+    }
+  }
+
+  return result;
+}

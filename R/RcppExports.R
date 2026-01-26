@@ -21,3 +21,7 @@ RcppGenGridEmbedding <- function(mat, E = 3L, tau = 1L, style = 1L) {
     .Call(`_infosp_RcppGenGridEmbedding`, mat, E, tau, style)
 }
 
+RcppGenTSEmbedding <- function(vec, E = 3L, tau = 1L, style = 0L) {
+    .Call(`_infosp_RcppGenTSEmbedding`, vec, E, tau, style)
+}
+

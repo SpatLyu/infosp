@@ -287,6 +287,11 @@ inline Matrix GenLatticeEmbedding(
         if (!allNaN) validCols.push_back(c);
     }
 
+    if (validCols.empty()) {
+      throw std::invalid_argument(
+          "No valid embeddings can be generated."
+      );
+    }
     if (validCols.size() == embed.front().size()) return embed;
 
     Matrix filtered(n);
@@ -378,6 +383,12 @@ inline Matrix LaggedValues4Grid(
         return out;
     }
 
+    // Since mat is non-empty and mat[0] is non-empty, rows >= 1 and cols >= 1
+    const size_t maxLag = std::max(rows, cols) - 1;
+    if (lag > maxLag) {
+      lag = maxLag;
+    }
+
     std::vector<std::pair<int,int>> offsets;
     for (int dx = -static_cast<int>(lag); dx <= static_cast<int>(lag); ++dx) {
         for (int dy = -static_cast<int>(lag); dy <= static_cast<int>(lag); ++dy) {
@@ -412,7 +423,7 @@ inline Matrix GenGridEmbedding(
     const Matrix& mat,
     size_t E = 3,
     size_t tau = 1,
-    Index style = 1
+    size_t style = 1
 ) {
     if (mat.empty() || mat.front().empty() || E == 0) return {};
 
@@ -421,23 +432,123 @@ inline Matrix GenGridEmbedding(
     const size_t total = rows * cols;
     const double NaN = std::numeric_limits<double>::quiet_NaN();
 
+    /* -------------------------------------------------------
+     Compute maximum meaningful lag for this grid
+     Moore neighborhood cannot exceed this radius
+     ------------------------------------------------------- */
+    const size_t maxLag = std::max(rows, cols) - 1;
+
+    /* -------------------------------------------------------
+     Clamp embedding dimension E so that all generated lags
+     are guaranteed to be within [0, maxLag] and overflow-free
+     ------------------------------------------------------- */
+    size_t maxE = 0;
+
+    if (tau == 0) {
+      /* lag(k) = k, k in [0, E-1] */
+      maxE = maxLag + 1;
+    }
+    else if (style == 0) {
+      /* lag(k) = k * tau, k in [1, E-1] */
+      maxE = maxLag / tau + 1;
+    }
+    else {
+      /* lag(k) = (k + 1) * tau, k in [0, E-1] */
+      maxE = maxLag / tau;
+    }
+
+    if (maxE == 0) return {};
+    if (E > maxE) E = maxE;
+
     Matrix embed(total, Vector(E, NaN));
 
-    auto fill_column = [&](size_t col, size_t lag) {
-        Matrix lagged = LaggedValues4Grid(mat, lag);
-        for (size_t i = 0; i < lagged.size(); ++i) {
-            double sum = 0.0;
-            size_t cnt = 0;
-            for (double v : lagged[i]) {
-                if (!std::isnan(v)) {
-                    sum += v;
-                    ++cnt;
-                }
+    // /*
+    //  * Repeats the grid data with a lag offset. The implementation is straightforward
+    //  * but involves redundant computations for large datasets.
+    //  * Kept here as a reference to the original approach.
+    //  */
+    // auto fill_column = [&](size_t col, size_t lag) {
+    //   Matrix lagged = LaggedValues4Grid(mat, lag);
+    //   for (size_t i = 0; i < lagged.size(); ++i) {
+    //     double sum = 0.0;
+    //     size_t cnt = 0;
+    //     for (double v : lagged[i]) {
+    //       if (!std::isnan(v)) {
+    //         sum += v;
+    //         ++cnt;
+    //       }
+    //     }
+    //     if (cnt > 0) embed[i][col] = sum / cnt;
+    //   }
+    // };
+
+    /* -------------------------
+     Cache offsets per lag
+     ------------------------- */
+    std::unordered_map<size_t, std::vector<std::pair<int,int>>> offsetCache;
+    offsetCache.reserve(E + 1);
+
+    auto get_offsets = [&](size_t lag)
+      -> const std::vector<std::pair<int,int>>&
+      {
+        auto it = offsetCache.find(lag);
+        if (it != offsetCache.end()) return it->second;
+
+        std::vector<std::pair<int,int>> offsets;
+        if (lag == 0) {
+          offsets.emplace_back(0, 0);
+        } else {
+          const int L = static_cast<int>(lag);
+          for (int dx = -L; dx <= L; ++dx) {
+            for (int dy = -L; dy <= L; ++dy) {
+              if (std::max(std::abs(dx), std::abs(dy)) == L) {
+                offsets.emplace_back(dx, dy);
+              }
             }
-            if (cnt > 0) embed[i][col] = sum / cnt;
+          }
         }
+
+        auto res = offsetCache.emplace(lag, std::move(offsets));
+        return res.first->second;
+      };
+
+    /* -------------------------
+     Fill one embedding column
+     ------------------------- */
+    auto fill_column = [&](size_t col, size_t lag) {
+      const auto& offsets = get_offsets(lag);
+
+      for (size_t r = 0; r < rows; ++r) {
+        for (size_t c = 0; c < cols; ++c) {
+          const size_t id = GridIndex(r, c, cols);
+
+          double sum = 0.0;
+          size_t cnt = 0;
+
+          for (const auto& off : offsets) {
+            const int nr = static_cast<int>(r) + off.first;
+            const int nc = static_cast<int>(c) + off.second;
+            if (nr >= 0 && nr < static_cast<int>(rows) &&
+                nc >= 0 && nc < static_cast<int>(cols)) {
+              double v = mat[nr][nc];
+              if (!std::isnan(v)) {
+                sum += v;
+                ++cnt;
+              }
+            }
+          }
+
+          if (cnt > 0) {
+            embed[id][col] = sum / cnt;
+          }
+          // else keep NaN
+        }
+      }
     };
 
+    /* -------------------------
+     Generate embeddings
+     ------------------------- */
     if (tau == 0) {
         Vector flat = GridMatToVec(mat);
         for (size_t i = 0; i < total; ++i) embed[i][0] = flat[i];
@@ -465,6 +576,11 @@ inline Matrix GenGridEmbedding(
         if (!allNaN) validCols.push_back(c);
     }
 
+    if (validCols.empty()) {
+      throw std::invalid_argument(
+          "No valid embeddings can be generated."
+      );
+    }
     if (validCols.size() == embed.front().size()) return embed;
 
     Matrix filtered(total);
@@ -475,6 +591,127 @@ inline Matrix GenGridEmbedding(
         }
     }
     return filtered;
+}
+
+/* ========================================================
+ * ------------------- TS OPERATORS -----------------------
+ * ======================================================== */
+
+/**
+ * @brief Generate time-delay embeddings for a univariate time series.
+ *
+ * This function reconstructs the state space of a scalar time series
+ * using time-delay embedding with dimension E and lag tau.
+ *
+ * - When tau = 0, embedding uses lags of 0, 1, ..., E-1.  (original behavior)
+ * - When tau > 0 and style = 1, embedding uses lags of tau, 2*tau, ..., E*tau.
+ * - When tau > 0 and style = 0, embedding uses lags of 0, tau, 2*tau, ..., (E-1)*tau.
+ *
+ * Example:
+ * Input: vec = {1, 2, 3, 4, 5}, E = 3, tau = 0
+ * Output:
+ * 1    NaN    NaN
+ * 2    1      NaN
+ * 3    2      1
+ * 4    3      2
+ * 5    4      3
+ *
+ * All values are pre-initialized to NaN. (Elements are filled only when
+ * sufficient non-NaN lagged values are available. *Previously bound,
+ * now abandoned*) Columns containing only NaN values are removed before
+ * returning. If no valid embedding columns remain (due to short input
+ * and large E/tau), an exception is thrown.
+ *
+ * @param vec The input time series as a vector of doubles.
+ * @param E Embedding dimension.
+ * @param tau Time lag.
+ * @param style Lag style when tau > 0:
+ *        - style = 1: tau, 2*tau, ..., E*tau
+ *        - style = 0: 0, tau, 2*tau, ..., (E-1)*tau
+ * @return A 2D vector (matrix) with valid embeddings (rows × cols).
+ */
+inline Matrix GenTSEmbedding(
+    const Vector& vec,
+    size_t E = 3,
+    size_t tau = 1,
+    size_t style = 0
+) {
+  const size_t N = vec.size();
+
+  if (E == 0) {
+    throw std::invalid_argument("Embedding dimension E must be >= 1.");
+  }
+
+  // Compute the maximum required lag before embedding
+  size_t max_lag;
+  if (tau == 0) {
+    max_lag = E - 1;
+  } else if (style == 0) {
+    max_lag = (E - 1) * tau;
+  } else { // style == 1
+    max_lag = E * tau;
+  }
+
+  // Pre-check: if the largest required lag exceeds available data
+  if (max_lag >= N) {
+    throw std::invalid_argument(
+        "Embedding parameters require a lag larger than available data length."
+    );
+  }
+
+  const double NaN = std::numeric_limits<double>::quiet_NaN();
+
+  // Preallocate embedding matrix: N rows, E columns
+  Matrix emb(N, std::vector<double>(E, NaN));
+
+  for (size_t t = 0; t < N; ++t) {
+    for (size_t j = 0; j < E; ++j) {
+      size_t lag;
+
+      if (tau == 0) {
+        lag = j; // Original behavior: 0, 1, ..., E-1
+      } else if (style == 0) {
+        lag = j * tau;         // 0, tau, 2*tau, ..., (E-1)*tau
+      } else { // style == 1;
+        lag = (j + 1) * tau;   // tau, 2*tau, ..., E*tau
+      }
+
+      if(t >= lag) {
+        emb[t][j] = vec[t - lag];
+        // else leave NaN
+      }
+    }
+  }
+
+  // Check which columns contain at least one non-NaN value
+  std::vector<size_t> keep;
+  keep.reserve(E);
+  for (size_t j = 0; j < E; ++j) {
+    for (size_t i = 0; i < N; ++i) {
+      if (!std::isnan(emb[i][j])) {
+        keep.push_back(j);
+        break;
+      }
+    }
+  }
+
+  if (keep.empty()) {
+    throw std::invalid_argument(
+        "No valid embeddings can be generated."
+    );
+  }
+  if (keep.size() == E) return emb;
+
+  // Create cleaned matrix with only columns having valid data
+  Matrix cleaned(N);
+  for (size_t i = 0; i < N; ++i) {
+    cleaned[i].reserve(keep.size());
+    for (size_t j : keep) {
+      cleaned[i].push_back(emb[i][j]);
+    }
+  }
+
+  return cleaned;
 }
 
 } // namespace Embed
