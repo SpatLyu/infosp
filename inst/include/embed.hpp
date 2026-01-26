@@ -287,6 +287,11 @@ inline Matrix GenLatticeEmbedding(
         if (!allNaN) validCols.push_back(c);
     }
 
+    if (validCols.empty()) {
+      throw std::invalid_argument(
+          "No valid embeddings can be generated."
+      );
+    }
     if (validCols.size() == embed.front().size()) return embed;
 
     Matrix filtered(n);
@@ -571,6 +576,12 @@ inline Matrix GenGridEmbedding(
         if (!allNaN) validCols.push_back(c);
     }
 
+    if (validCols.empty()) {
+      throw std::invalid_argument(
+          "No valid embeddings can be generated."
+      );
+    }
+
     if (validCols.size() == embed.front().size()) return embed;
 
     Matrix filtered(total);
@@ -674,11 +685,12 @@ inline Matrix GenTSEmbedding(
   }
 
   // Check which columns contain at least one non-NaN value
-  std::vector<bool> keep(E, false);
+  std::vector<size_t> keep;
+  keep.reserve(E);
   for (size_t j = 0; j < E; ++j) {
     for (size_t i = 0; i < N; ++i) {
       if (!std::isnan(mat[i][j])) {
-        keep[j] = true;
+        keep.push_back(j);
         break;
       }
     }
@@ -686,11 +698,8 @@ inline Matrix GenTSEmbedding(
 
   // If no columns remain, throw exception
   bool any_column = false;
-  for (bool b : keep) {
-    if (b) {
-      any_column = true;
-      break;
-    }
+  if (!keep.empty()){
+    any_column = true;
   }
   if (!any_column) {
     throw std::invalid_argument(
