@@ -48,8 +48,8 @@ namespace InfoTheo
      * Utilities
      ***********************************************************/
     inline double convert_log_base(double x, double base)
-    {   
-        if (x <= 0.0) return 0.0; 
+    {
+        if (x <= 0.0) return 0.0;
         if (!(base > 0.0) || std::abs(base - 1.0) < 1e-12)
         {
           throw std::invalid_argument("Log base must be positive and not equal to 1.");
@@ -263,6 +263,13 @@ namespace InfoTheo
         double base = 2.0,
         bool NA_rm = false)
     {
+        if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
+
+        if (conds.empty())
+        {
+          throw std::invalid_argument("The conds parameter can not be empty.");
+        }
+
         std::vector<size_t> tc = conds;
         tc.insert(tc.end(), target.begin(), target.end());
 
@@ -279,6 +286,8 @@ namespace InfoTheo
         double base = 2.0,
         bool NA_rm = false)
     {
+        if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
+
         double sum_h = 0.0;
         for (size_t v : target)
             sum_h += Entropy(mat[v], base, NA_rm);
@@ -298,6 +307,13 @@ namespace InfoTheo
         double base = 2.0,
         bool NA_rm = false)
     {
+        if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
+
+        if (interact.empty() || conds.empty())
+        {
+          throw std::invalid_argument("The interact / conds parameter can not be empty.");
+        }
+
         std::vector<size_t> ct  = conds;
         std::vector<size_t> ci  = conds;
         std::vector<size_t> cti = conds;
