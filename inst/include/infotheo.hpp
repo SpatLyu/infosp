@@ -289,21 +289,28 @@ namespace InfoTheo
     }
 
     /***********************************************************
-     * Mutual Information
+     * Mutual Information I(target ; interact)
      ***********************************************************/
     inline double MI(
         const Matrix& mat,
         const std::vector<size_t>& target,
+        const std::vector<size_t>& interact,
         double base = 2.0,
         bool NA_rm = false)
     {
         if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
 
-        double sum_h = 0.0;
-        for (size_t v : target)
-            sum_h += Entropy(mat[v], base, NA_rm);
+        if (interact.empty())
+        {
+          throw std::invalid_argument("The interact parameter can not be empty.");
+        }
 
-        return sum_h - JE(mat, target, base, NA_rm);
+        std::vector<size_t> ti = interact;
+        ti.insert(ti.end(), target.begin(), target.end());
+
+        return JE(mat, target, base, NA_rm) +
+               JE(mat, interact, base, NA_rm) -
+               JE(mat, ti, base, NA_rm);
     }
 
     /***********************************************************
