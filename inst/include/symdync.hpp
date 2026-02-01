@@ -87,6 +87,7 @@
 #include <cmath>
 #include <limits>
 #include <numeric>
+#include <utility>
 #include <algorithm>
 #include <stdexcept>
 #include <cstdint>
