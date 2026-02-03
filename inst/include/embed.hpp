@@ -2,10 +2,11 @@
  *
  *  File: embed.hpp
  *
- *  Spatial Embedding Utilities for Lattice and Grid Structures.
+ *  Spatial embedding utilities for lattice/grid structures and 
+ *  temporal-delay embedding utilities for time series.
  *
  *  This header provides high performance utilities for generating
- *  spatial embeddings on:
+ *  temporal embeddings, and for generating spatial embeddings on:
  *
  *    - Arbitrary lattices defined by neighbor lists
  *    - Regular 2D grids using Moore neighborhoods
@@ -15,7 +16,7 @@
  *    - Multi lag neighbor expansion on graphs
  *    - Lagged value aggregation
  *    - Grid index mapping utilities
- *    - Spatial embedding generation
+ *    - Temporal/Spatial embedding generation
  *
  *  Design principles:
  *
