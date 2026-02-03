@@ -2,10 +2,11 @@
  *
  *  File: embed.hpp
  *
- *  Spatial Embedding Utilities for Lattice and Grid Structures.
+ *  Spatial embedding utilities for lattice/grid structures and 
+ *  temporal-delay embedding utilities for time series.
  *
  *  This header provides high performance utilities for generating
- *  spatial embeddings on:
+ *  temporal embeddings, and for generating spatial embeddings on:
  *
  *    - Arbitrary lattices defined by neighbor lists
  *    - Regular 2D grids using Moore neighborhoods
@@ -15,7 +16,7 @@
  *    - Multi lag neighbor expansion on graphs
  *    - Lagged value aggregation
  *    - Grid index mapping utilities
- *    - Spatial embedding generation
+ *    - Temporal/Spatial embedding generation
  *
  *  Design principles:
  *
@@ -61,47 +62,95 @@ using Matrix       = std::vector<Vector>;
  * ============================================================= */
 
 /**
- * @brief Expand neighbors on a lattice up to a given lag.
+ * @brief Expand lattice neighbors to a given lag.
+ *
+ * This function computes lagged neighbor sets on a lattice graph.
+ * Two expansion modes are supported:
+ *
+ *   cumulate = true:
+ *       Returns the cumulative reachability closure
+ *       R_lag(i) = nodes reachable from i within ≤ lag steps.
+ *
+ *   cumulate = false:
+ *       Returns the exact lag shell
+ *       S_lag(i) = nodes reachable in exactly lag steps,
+ *                  excluding all nodes from previous lags.
  *
  * For lag = 0, each node returns itself.
- * For lag > 0, neighbors are recursively expanded and merged.
  *
- * No sentinel values are used. Empty neighbor sets remain empty.
+ * The algorithm recursively expands neighbor sets while preserving
+ * sorted ordering and removing duplicates.
+ *
+ * Empty neighbor sets are represented as empty vectors.
+ * No sentinel values are used.
+ *
+ * @param nb        Base adjacency list of the lattice
+ * @param lag       Expansion lag (automatically clamped to n−1)
+ * @param cumulate  Whether to return cumulative closure (true)
+ *                  or exact lag shell (false)
+ *
+ * @return NeighborMat (std::vector<std::vector<size_t>>)
+ *         Vector of lagged neighbor indices for each node
+ *
+ * @note
+ *   - Safe for disconnected graphs
+ *   - Stable ordering for deterministic results
+ *   - lag ≥ n−1 produces saturated closure
  */
 inline NeighborMat LaggedNeighbors4Lattice(
     const NeighborMat& nb,
-    size_t lag
+    size_t lag,
+    bool cumulate = true
 ) {
     const size_t n = nb.size();
     NeighborMat result(n);
+
+    const size_t max_lag = n - 1;
+    lag = std::min(lag, max_lag);
 
     if (lag == 0) {
         for (size_t i = 0; i < n; ++i) {
             result[i] = { i };
         }
-    } else if (lag >= n - 1) {
-        std::vector<size_t> v(n);
-        std::iota(v.begin(), v.end(), size_t{0});
-        for (size_t i = 0; i < n; ++i) {
-            result[i] = v;
-        }
     } else {
         NeighborMat prev = LaggedNeighbors4Lattice(nb, lag - 1);
-
-        for (size_t i = 0; i < n; ++i) {
-            if (prev[i].size() == n) {
-                result[i] = prev[i];
-            } else {
-                std::unordered_set<size_t> merged;
-                merged.reserve(prev[i].size() + nb[i].size());
-                for (size_t v : prev[i]) {
-                    merged.insert(v);
-                    for (size_t u : nb[v]) {
-                        merged.insert(u);
+        
+        if (cumulate) {
+            for (size_t i = 0; i < n; ++i) {
+                if (prev[i].size() == n) {
+                    result[i] = prev[i];
+                } else {
+                    std::unordered_set<size_t> merged;
+                    merged.reserve(prev[i].size() + nb[i].size());
+                    for (size_t v : prev[i]) {
+                        merged.insert(v);
+                        for (size_t u : nb[v]) {
+                            merged.insert(u);
+                        }
+                    }
+                    result[i].assign(merged.begin(), merged.end());
+                    std::sort(result[i].begin(), result[i].end());
+                }
+            }
+        } else {
+            for (size_t i = 0; i < n; ++i) {
+                std::vector<size_t> newIndices;
+                for (size_t prev_nb : prev[i]) {
+                    for (size_t cur_nb : nb[prev_nb]) {
+                        if (!std::binary_search(prev[i].begin(), prev[i].end(), cur_nb)) {
+                            newIndices.push_back(cur_nb);
+                        }
                     }
                 }
-                result[i].assign(merged.begin(), merged.end());
-                std::sort(result[i].begin(), result[i].end());
+
+                if (newIndices.empty()) {
+                    result[i] = { };
+                } else {
+                    std::sort(newIndices.begin(), newIndices.end());
+                    newIndices.erase(std::unique(newIndices.begin(), newIndices.end()),
+                                     newIndices.end());
+                    result[i] = std::move(newIndices);
+                }
             }
         }
     }
@@ -122,13 +171,12 @@ inline Matrix LaggedValues4Lattice(
     const size_t n = nb.size();
     Matrix out(n);
 
+    const size_t max_lag = n - 1;
+    lag = std::min(lag, max_lag);
+
     if (lag == 0) {
         for (size_t i = 0; i < n; ++i) {
             out[i] = { vec[i] };
-        }
-    } else if (lag >= n - 1) {
-        for (size_t i = 0; i < n; ++i) {
-            out[i] = vec;
         }
     } else {
         // Remove duplicates with previous lag (if lag > 1)
@@ -138,11 +186,11 @@ inline Matrix LaggedValues4Lattice(
             // Convert previous lagged results to a set for fast lookup
             std::unordered_set<size_t> prevSet(prevNeighbors[i].begin(), prevNeighbors[i].end());
             // Remove duplicates from previous lagged results
-            std::vector<size_t> newIndices;
+            std::unordered_set<size_t> newIndices;
             for (size_t prev_nb : prevSet){
                 for (size_t cur_nb : nb[prev_nb]) {
                     if (prevSet.find(cur_nb) == prevSet.end()) {
-                        newIndices.push_back(cur_nb);
+                        newIndices.insert(cur_nb);
                     }
                 }
             }
@@ -151,9 +199,17 @@ inline Matrix LaggedValues4Lattice(
             if (newIndices.empty()) {
                 out[i] = { std::numeric_limits<double>::quiet_NaN() };
             } else {
-                // std::sort(newIndices.begin(), newIndices.end()); // no need to sorted
                 out[i].reserve(newIndices.size());
-                for (size_t j : newIndices) {
+
+                // // Ignore order for value collection
+                // for (size_t j : newIndices) {
+                //     out[i].push_back(vec[j]);
+                // }
+
+                // Keep order for value collection
+                std::vector<size_t> sortedIndices(newIndices.begin(), newIndices.end());
+                std::sort(sortedIndices.begin(), sortedIndices.end());
+                for (size_t j : sortedIndices) {
                     out[i].push_back(vec[j]);
                 }
             }
@@ -246,31 +302,36 @@ inline Matrix GenLatticeEmbedding(
             double sum = 0.0;
             size_t cnt = 0;
 
-            const auto& A = cur[i];
-            const auto& B = prev[i];
+            const auto& cur_set = cur[i];
+            const auto& prev_set = prev[i];
 
-            auto itA = A.begin();
-            auto itB = B.begin();
+            auto it_cur = cur_set.begin();
+            auto it_prev = prev_set.begin();
+            const auto it_prev_end = prev_set.end();
 
-            while (itA != A.end()) {
-                if (itB == B.end() || *itA < *itB) {
-                    double v = vec[*itA];
-                    if (!std::isnan(v)) {
-                        sum += v;
-                        ++cnt;
-                    }
-                    ++itA;
-                } else if (*itB < *itA) {
-                    ++itB;
-                } else {
-                    ++itA;
-                    ++itB;
+            // Compute set difference: cur \ prev (both sorted, prev ⊆ cur guaranteed)
+            while (it_cur != cur_set.end() && it_prev != it_prev_end) {
+                if (*it_cur < *it_prev) {
+                    const double v = vec[*it_cur];
+                    if (!std::isnan(v)) { sum += v; ++cnt; }
+                    ++it_cur;
+                } else if (*it_prev < *it_cur) {
+                    ++it_prev;
+                } else {  // *it_cur == *it_prev → skip intersection
+                    ++it_cur;
+                    ++it_prev;
                 }
             }
 
-            if (cnt > 0) {
-                embed[i][col] = sum / cnt; // valid lagged value
+            // Remaining elements in cur are guaranteed to be in the difference set
+            // (since prev ⊆ cur and prev is exhausted)
+            while (it_cur != cur_set.end()) {
+                const double v = vec[*it_cur];
+                if (!std::isnan(v)) { sum += v; ++cnt; }
+                ++it_cur;
             }
+
+            if (cnt > 0) embed[i][col] = sum / cnt;
         }
     }
 

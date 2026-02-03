@@ -5,7 +5,10 @@
 std::vector<std::vector<size_t>> nb2std(const Rcpp::List& nb) {
   // Get the number of elements in the nb object
   size_t n = static_cast<size_t>(nb.size());
-
+  if (n <= 1) {
+    Rcpp::stop("The nb object must contain at least two spatial units (got %d)", n);
+  }
+  
   // Create a std::vector<std::vector<size_t>> to store the result
   std::vector<std::vector<size_t>> result(n);
 

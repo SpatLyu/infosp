@@ -11,13 +11,14 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // RcppLaggedNeighbors4Lattice
-Rcpp::List RcppLaggedNeighbors4Lattice(const Rcpp::List& nb, int lag);
-RcppExport SEXP _infosp_RcppLaggedNeighbors4Lattice(SEXP nbSEXP, SEXP lagSEXP) {
+Rcpp::List RcppLaggedNeighbors4Lattice(const Rcpp::List& nb, int lag, bool cumulate);
+RcppExport SEXP _infosp_RcppLaggedNeighbors4Lattice(SEXP nbSEXP, SEXP lagSEXP, SEXP cumulateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::List& >::type nb(nbSEXP);
     Rcpp::traits::input_parameter< int >::type lag(lagSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppLaggedNeighbors4Lattice(nb, lag));
+    Rcpp::traits::input_parameter< bool >::type cumulate(cumulateSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppLaggedNeighbors4Lattice(nb, lag, cumulate));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -86,7 +87,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_infosp_RcppLaggedNeighbors4Lattice", (DL_FUNC) &_infosp_RcppLaggedNeighbors4Lattice, 2},
+    {"_infosp_RcppLaggedNeighbors4Lattice", (DL_FUNC) &_infosp_RcppLaggedNeighbors4Lattice, 3},
     {"_infosp_RcppLaggedValues4Lattice", (DL_FUNC) &_infosp_RcppLaggedValues4Lattice, 3},
     {"_infosp_RcppGenLatticeEmbedding", (DL_FUNC) &_infosp_RcppGenLatticeEmbedding, 5},
     {"_infosp_RcppLaggedValues4Grid", (DL_FUNC) &_infosp_RcppLaggedValues4Grid, 2},
