@@ -75,15 +75,12 @@ inline NeighborMat LaggedNeighbors4Lattice(
     const size_t n = nb.size();
     NeighborMat result(n);
 
+    const size_t max_lag = n - 1;
+    lag = std::min(lag, max_lag);
+
     if (lag == 0) {
         for (size_t i = 0; i < n; ++i) {
             result[i] = { i };
-        }
-    } else if (lag >= n - 1) {
-        std::vector<size_t> v(n);
-        std::iota(v.begin(), v.end(), size_t{0});
-        for (size_t i = 0; i < n; ++i) {
-            result[i] = v;
         }
     } else {
         NeighborMat prev = LaggedNeighbors4Lattice(nb, lag - 1);
