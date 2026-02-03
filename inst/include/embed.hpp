@@ -61,16 +61,45 @@ using Matrix       = std::vector<Vector>;
  * ============================================================= */
 
 /**
- * @brief Expand neighbors on a lattice up to a given lag.
+ * @brief Expand lattice neighbors to a given lag.
+ *
+ * This function computes lagged neighbor sets on a lattice graph.
+ * Two expansion modes are supported:
+ *
+ *   cumulate = true:
+ *       Returns the cumulative reachability closure
+ *       R_lag(i) = nodes reachable from i within ≤ lag steps.
+ *
+ *   cumulate = false:
+ *       Returns the exact lag shell
+ *       S_lag(i) = nodes reachable in exactly lag steps,
+ *                  excluding all nodes from previous lags.
  *
  * For lag = 0, each node returns itself.
- * For lag > 0, neighbors are recursively expanded and merged.
  *
- * No sentinel values are used. Empty neighbor sets remain empty.
+ * The algorithm recursively expands neighbor sets while preserving
+ * sorted ordering and removing duplicates.
+ *
+ * Empty neighbor sets are represented as empty vectors.
+ * No sentinel values are used.
+ *
+ * @param nb        Base adjacency list of the lattice
+ * @param lag       Expansion lag (automatically clamped to n−1)
+ * @param cumulate  Whether to return cumulative closure (true)
+ *                  or exact lag shell (false)
+ *
+ * @return NeighborMat (std::vector<std::vector<size_t>>)
+ *         Vector of lagged neighbor indices for each node
+ *
+ * @note
+ *   - Safe for disconnected graphs
+ *   - Stable ordering for deterministic results
+ *   - lag ≥ n−1 produces saturated closure
  */
 inline NeighborMat LaggedNeighbors4Lattice(
     const NeighborMat& nb,
-    size_t lag
+    size_t lag,
+    bool cumulate = true
 ) {
     const size_t n = nb.size();
     NeighborMat result(n);
@@ -84,21 +113,42 @@ inline NeighborMat LaggedNeighbors4Lattice(
         }
     } else {
         NeighborMat prev = LaggedNeighbors4Lattice(nb, lag - 1);
-
-        for (size_t i = 0; i < n; ++i) {
-            if (prev[i].size() == n) {
-                result[i] = prev[i];
-            } else {
-                std::unordered_set<size_t> merged;
-                merged.reserve(prev[i].size() + nb[i].size());
-                for (size_t v : prev[i]) {
-                    merged.insert(v);
-                    for (size_t u : nb[v]) {
-                        merged.insert(u);
+        
+        if (cumulate) {
+            for (size_t i = 0; i < n; ++i) {
+                if (prev[i].size() == n) {
+                    result[i] = prev[i];
+                } else {
+                    std::unordered_set<size_t> merged;
+                    merged.reserve(prev[i].size() + nb[i].size());
+                    for (size_t v : prev[i]) {
+                        merged.insert(v);
+                        for (size_t u : nb[v]) {
+                            merged.insert(u);
+                        }
+                    }
+                    result[i].assign(merged.begin(), merged.end());
+                    std::sort(result[i].begin(), result[i].end());
+                }
+            }
+        } else {
+            for (size_t i = 0; i < n; ++i) {
+                std::unordered_set<size_t> prevSet(prev[i].begin(), prev[i].end());
+                std::vector<size_t> newIndices;
+                for (size_t prev_nb : prevSet){
+                    for (size_t cur_nb : nb[prev_nb]) {
+                        if (prevSet.find(cur_nb) == prevSet.end()) {
+                            newIndices.push_back(cur_nb);
+                        }
                     }
                 }
-                result[i].assign(merged.begin(), merged.end());
-                std::sort(result[i].begin(), result[i].end());
+
+                if (newIndices.empty()) {
+                    result[i] = { };
+                } else {
+                    result[i] = std::move(newIndices);
+                    std::sort(result[i].begin(), result[i].end());
+                }
             }
         }
     }
