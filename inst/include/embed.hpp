@@ -198,9 +198,17 @@ inline Matrix LaggedValues4Lattice(
             if (newIndices.empty()) {
                 out[i] = { std::numeric_limits<double>::quiet_NaN() };
             } else {
-                // std::sort(newIndices.begin(), newIndices.end()); // no need to sorted
                 out[i].reserve(newIndices.size());
-                for (size_t j : newIndices) {
+
+                // // Ignore order for value collection
+                // for (size_t j : newIndices) {
+                //     out[i].push_back(vec[j]);
+                // }
+
+                // Keep order for value collection
+                std::vector<size_t> sortedIndices(newIndices.begin(), newIndices.end());
+                std::sort(sortedIndices.begin(), sortedIndices.end());
+                for (size_t j : sortedIndices) {
                     out[i].push_back(vec[j]);
                 }
             }
