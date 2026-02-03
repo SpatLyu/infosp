@@ -133,11 +133,10 @@ inline NeighborMat LaggedNeighbors4Lattice(
             }
         } else {
             for (size_t i = 0; i < n; ++i) {
-                std::unordered_set<size_t> prevSet(prev[i].begin(), prev[i].end());
                 std::vector<size_t> newIndices;
-                for (size_t prev_nb : prevSet){
+                for (size_t prev_nb : prev[i]) {
                     for (size_t cur_nb : nb[prev_nb]) {
-                        if (prevSet.find(cur_nb) == prevSet.end()) {
+                        if (!std::binary_search(prev[i].begin(), prev[i].end(), cur_nb)) {
                             newIndices.push_back(cur_nb);
                         }
                     }
@@ -146,8 +145,10 @@ inline NeighborMat LaggedNeighbors4Lattice(
                 if (newIndices.empty()) {
                     result[i] = { };
                 } else {
+                    std::sort(newIndices.begin(), newIndices.end());
+                    newIndices.erase(std::unique(newIndices.begin(), newIndices.end()),
+                                     newIndices.end());
                     result[i] = std::move(newIndices);
-                    std::sort(result[i].begin(), result[i].end());
                 }
             }
         }
