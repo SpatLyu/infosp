@@ -26,7 +26,7 @@
  *    - Header only implementation
  *    - Robust NaN propagation
  *
- *  Author: Wenbo Lv (Github: @SpatLyu)
+ *  Author: Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
  *
  ***************************************************************/

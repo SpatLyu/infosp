@@ -75,7 +75,7 @@
  *    - Information theoretic analysis
  *    - Causal pattern discovery
  *
- *  Author: Wenbo Lv (Github: @SpatLyu)
+ *  Author: Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
  *
  ***************************************************************/
