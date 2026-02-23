@@ -55,6 +55,17 @@ double RcppJE(SEXP mat,
 {
     InfoTheo::Matrix m = mat2patmat(mat);
     std::vector<size_t> v = Rcpp::as<std::vector<size_t>>(vars);
+
+    const size_t n_cols = m.size();
+    for (auto& idx : v) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Column index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    
     return InfoTheo::JE(m, v, base, NA_rm);
 }
 
@@ -71,6 +82,24 @@ double RcppCE(SEXP mat,
     std::vector<size_t> t = Rcpp::as<std::vector<size_t>>(target);
     std::vector<size_t> c = Rcpp::as<std::vector<size_t>>(conds);
 
+    const size_t n_cols = m.size();
+    for (auto& idx : t) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Target index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : c) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Conds index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+
     return InfoTheo::CE(m, t, c, base, NA_rm);
 }
 
@@ -86,6 +115,24 @@ double RcppMI(SEXP mat,
 
     std::vector<size_t> t = Rcpp::as<std::vector<size_t>>(target);
     std::vector<size_t> i = Rcpp::as<std::vector<size_t>>(interact);
+
+    const size_t n_cols = m.size();
+    for (auto& idx : t) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Target index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : i) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Interact index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
 
     return InfoTheo::MI(m, t, i, base, NA_rm);
 }
@@ -104,6 +151,32 @@ double RcppCMI(SEXP mat,
     std::vector<size_t> t = Rcpp::as<std::vector<size_t>>(target);
     std::vector<size_t> i = Rcpp::as<std::vector<size_t>>(interact);
     std::vector<size_t> c = Rcpp::as<std::vector<size_t>>(conds);
+
+    const size_t n_cols = m.size();
+    for (auto& idx : t) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Target index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : i) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Interact index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : c) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Conds index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
 
     return InfoTheo::CMI(m, t, i, c, base, NA_rm);
 }
