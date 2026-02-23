@@ -25,32 +25,32 @@ RcppGenTSEmbedding <- function(vec, E = 3L, tau = 1L, style = 0L) {
     .Call(`_infosp_RcppGenTSEmbedding`, vec, E, tau, style)
 }
 
-RcppEntropy <- function(series, base = 2.0, NA_rm = FALSE) {
-    .Call(`_infosp_RcppEntropy`, series, base, NA_rm)
+RcppEntropy <- function(series, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppEntropy`, series, base, na_rm)
 }
 
-RcppJE <- function(mat, vars, base = 2.0, NA_rm = FALSE) {
-    .Call(`_infosp_RcppJE`, mat, vars, base, NA_rm)
+RcppJE <- function(mat, vars, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppJE`, mat, vars, base, na_rm)
 }
 
-RcppCE <- function(mat, target, conds, base = 2.0, NA_rm = FALSE) {
-    .Call(`_infosp_RcppCE`, mat, target, conds, base, NA_rm)
+RcppCE <- function(mat, target, conds, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppCE`, mat, target, conds, base, na_rm)
 }
 
-RcppMI <- function(mat, target, interact, base = 2.0, NA_rm = FALSE) {
-    .Call(`_infosp_RcppMI`, mat, target, interact, base, NA_rm)
+RcppMI <- function(mat, target, interact, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppMI`, mat, target, interact, base, na_rm)
 }
 
-RcppCMI <- function(mat, target, interact, conds, base = 2.0, NA_rm = FALSE) {
-    .Call(`_infosp_RcppCMI`, mat, target, interact, conds, base, NA_rm)
+RcppCMI <- function(mat, target, interact, conds, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppCMI`, mat, target, interact, conds, base, na_rm)
 }
 
 RcppGenSignatureSpace <- function(mat, relative = TRUE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }
 
-RcppGenPatternSpace <- function(mat, NA_rm = TRUE) {
-    .Call(`_infosp_RcppGenPatternSpace`, mat, NA_rm)
+RcppGenPatternSpace <- function(mat, na_rm = TRUE) {
+    .Call(`_infosp_RcppGenPatternSpace`, mat, na_rm)
 }
 
 RcppCountSignProp <- function(pat1, pat2) {

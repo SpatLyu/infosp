@@ -12,7 +12,7 @@
 // [[Rcpp::export(rng = false)]]
 double RcppEntropy(SEXP series,
                    double base = 2.0,
-                   bool NA_rm = false)
+                   bool na_rm = true)
 {
     InfoTheo::PatternSeries s;
 
@@ -43,7 +43,7 @@ double RcppEntropy(SEXP series,
             Rcpp::stop("Input must be Integer, Numeric, or Character vector.");
     }
 
-    return InfoTheo::Entropy(s, base, NA_rm);
+    return InfoTheo::Entropy(s, base, na_rm);
 }
 
 // Wrapper function to calculate joint entropy
@@ -51,7 +51,7 @@ double RcppEntropy(SEXP series,
 double RcppJE(SEXP mat,
               Rcpp::IntegerVector vars,
               double base = 2.0,
-              bool NA_rm = false)
+              bool na_rm = true)
 {
     InfoTheo::Matrix m = mat2patmat(mat);
     std::vector<size_t> v = Rcpp::as<std::vector<size_t>>(vars);
@@ -66,7 +66,7 @@ double RcppJE(SEXP mat,
         idx -= 1;  // to 0-based
     }
     
-    return InfoTheo::JE(m, v, base, NA_rm);
+    return InfoTheo::JE(m, v, base, na_rm);
 }
 
 // Wrapper function to calculate conditional entropy
@@ -75,7 +75,7 @@ double RcppCE(SEXP mat,
               Rcpp::IntegerVector target,
               Rcpp::IntegerVector conds,
               double base = 2.0,
-              bool NA_rm = false)
+              bool na_rm = true)
 {
     InfoTheo::Matrix m = mat2patmat(mat);
 
@@ -100,7 +100,7 @@ double RcppCE(SEXP mat,
         idx -= 1;  // to 0-based
     }
 
-    return InfoTheo::CE(m, t, c, base, NA_rm);
+    return InfoTheo::CE(m, t, c, base, na_rm);
 }
 
 // Wrapper function to calculate mutual information
@@ -109,7 +109,7 @@ double RcppMI(SEXP mat,
               Rcpp::IntegerVector target,
               Rcpp::IntegerVector interact,
               double base = 2.0,
-              bool NA_rm = false)
+              bool na_rm = true)
 {
     InfoTheo::Matrix m = mat2patmat(mat);
 
@@ -134,7 +134,7 @@ double RcppMI(SEXP mat,
         idx -= 1;  // to 0-based
     }
 
-    return InfoTheo::MI(m, t, i, base, NA_rm);
+    return InfoTheo::MI(m, t, i, base, na_rm);
 }
 
 // Wrapper function to calculate conditional mutual information
@@ -144,7 +144,7 @@ double RcppCMI(SEXP mat,
                Rcpp::IntegerVector interact,
                Rcpp::IntegerVector conds,
                double base = 2.0,
-               bool NA_rm = false)
+               bool na_rm = true)
 {
     InfoTheo::Matrix m = mat2patmat(mat);
 
@@ -178,5 +178,5 @@ double RcppCMI(SEXP mat,
         idx -= 1;  // to 0-based
     }
 
-    return InfoTheo::CMI(m, t, i, c, base, NA_rm);
+    return InfoTheo::CMI(m, t, i, c, base, na_rm);
 }
