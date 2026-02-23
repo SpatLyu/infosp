@@ -152,7 +152,7 @@ std::vector<uint8_t> index2base4(uint64_t idx)
  *  Design:
  *      - Extract unique non NA values
  *      - Sort from low to high
- *      - Assign increasing index 0,1,2,...
+ *      - Assign increasing index 1,2,3,...
  *      - Encode index in base 4
  *      - Each observation becomes one Pattern
  *
@@ -175,9 +175,12 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v)
     std::vector<int> uniq;
     uniq.reserve(v.size());
 
-    for (int val : v)
-        if (!Rcpp::IntegerVector::is_na(val))
-            uniq.push_back(val);
+    for (int i = 0; i < v.size(); ++i)
+        if (!Rcpp::IntegerVector::is_na(v[i]))
+            uniq.push_back(v[i]);
+    // for (int val : v)
+    //     if (!Rcpp::IntegerVector::is_na(val))
+    //         uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
@@ -185,21 +188,33 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v)
     // 2. Map value → index
     std::unordered_map<int, uint64_t> dict;
     for (uint64_t i = 0; i < uniq.size(); ++i)
-        dict[uniq[i]] = i;
+        dict[uniq[i]] = i+1;
 
     // 3. Encode each observation
-    for (int val : v)
+    for (int i = 0; i < v.size(); ++i)
     {
-        if (Rcpp::IntegerVector::is_na(val))
+        if (Rcpp::IntegerVector::is_na(v[i]))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
         else
         {
-            uint64_t idx = dict[val];
+            uint64_t idx = dict[v[i]];
             series.push_back( index2base4(idx) );
         }
     }
+    // for (int val : v)
+    // {
+    //     if (Rcpp::IntegerVector::is_na(val))
+    //     {
+    //         series.push_back( std::vector<uint8_t>{0} );
+    //     }
+    //     else
+    //     {
+    //         uint64_t idx = dict[val];
+    //         series.push_back( index2base4(idx) );
+    //     }
+    // }
 
     return series;
 }
@@ -212,30 +227,45 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::NumericVector& v)
 
     std::vector<double> uniq;
     uniq.reserve(v.size());
-
-    for (double val : v)
-        if (!Rcpp::NumericVector::is_na(val))
-            uniq.push_back(val);
+    
+    for (int i = 0; i < v.size(); ++i)
+        if (!Rcpp::NumericVector::is_na(v[i]))
+            uniq.push_back(v[i]);
+    // for (double val : v)
+    //     if (!Rcpp::NumericVector::is_na(val))
+    //         uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
 
     std::unordered_map<double, uint64_t> dict;
     for (uint64_t i = 0; i < uniq.size(); ++i)
-        dict[uniq[i]] = i;
+        dict[uniq[i]] = i+1;
 
-    for (double val : v)
+    for (int i = 0; i < v.size(); ++i)
     {
-        if (Rcpp::NumericVector::is_na(val))
+        if (Rcpp::NumericVector::is_na(v[i]))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
         else
         {
-            uint64_t idx = dict[val];
+            uint64_t idx = dict[v[i]];
             series.push_back( index2base4(idx) );
         }
     }
+    // for (double val : v)
+    // {
+    //     if (Rcpp::NumericVector::is_na(val))
+    //     {
+    //         series.push_back( std::vector<uint8_t>{0} );
+    //     }
+    //     else
+    //     {
+    //         uint64_t idx = dict[val];
+    //         series.push_back( index2base4(idx) );
+    //     }
+    // }
 
     return series;
 }
@@ -248,27 +278,27 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
 
     std::vector<std::string> uniq;
     uniq.reserve(v.size());
-
-    for (Rcpp::String s : v)
-        if (s != NA_STRING)
-            uniq.push_back(std::string(s));
+    
+    for (int i = 0; i < v.size(); ++i)
+        if (!Rcpp::CharacterVector::is_na(v[i]))
+            uniq.push_back(std::string(v[i]));
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
 
     std::unordered_map<std::string, uint64_t> dict;
     for (uint64_t i = 0; i < uniq.size(); ++i)
-        dict[uniq[i]] = i;
+        dict[uniq[i]] = i+1;
 
-    for (Rcpp::String s : v)
+    for (int i = 0; i < v.size(); ++i)
     {
-        if (s == NA_STRING)
+        if (Rcpp::CharacterVector::is_na(v[i]))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
         else
         {
-            uint64_t idx = dict[std::string(s)];
+            uint64_t idx = dict[std::string(v[i])];
             series.push_back( index2base4(idx) );
         }
     }

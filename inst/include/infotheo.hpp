@@ -104,7 +104,10 @@ namespace InfoTheo
         const Pattern& p,
         PackedKey& key,
         bool NA_rm)
-    {
+    {   
+        // ---------- Pattern-level NA ----------
+        if (NA_rm && p.size() == 1 && p[0] == 0)
+            return false;
         key.blocks.clear();
 
         uint64_t cur = 0;
@@ -112,9 +115,6 @@ namespace InfoTheo
 
         for (uint8_t x : p)
         {
-            if (NA_rm && x == 0)
-                return false;
-
             uint64_t val = static_cast<uint64_t>(x & 0x3);
             cur |= (val << shift);
             shift += 2;
