@@ -8,7 +8,8 @@
 #include "infotheo.hpp"
 #include "DataTrans.h"
 
-// [[Rcpp::export]]
+// Wrapper function to calculate shannon entropy
+// [[Rcpp::export(rng = false)]]
 double RcppEntropy(SEXP series,
                    double base = 2.0,
                    bool NA_rm = false)
@@ -17,8 +18,8 @@ double RcppEntropy(SEXP series,
     return InfoTheo::Entropy(s, base, NA_rm);
 }
 
-
-// [[Rcpp::export]]
+// Wrapper function to calculate joint entropy
+// [[Rcpp::export(rng = false)]]
 double RcppJE(SEXP mat,
               Rcpp::IntegerVector vars,
               double base = 2.0,
@@ -29,8 +30,8 @@ double RcppJE(SEXP mat,
     return InfoTheo::JE(m, v, base, NA_rm);
 }
 
-
-// [[Rcpp::export]]
+// Wrapper function to calculate conditional entropy
+// [[Rcpp::export(rng = false)]]
 double RcppCE(SEXP mat,
               Rcpp::IntegerVector target,
               Rcpp::IntegerVector conds,
@@ -45,8 +46,8 @@ double RcppCE(SEXP mat,
     return InfoTheo::CE(m, t, c, base, NA_rm);
 }
 
-
-// [[Rcpp::export]]
+// Wrapper function to calculate mutual information
+// [[Rcpp::export(rng = false)]]
 double RcppMI(SEXP mat,
               Rcpp::IntegerVector target,
               Rcpp::IntegerVector interact,
@@ -61,8 +62,8 @@ double RcppMI(SEXP mat,
     return InfoTheo::MI(m, t, i, base, NA_rm);
 }
 
-
-// [[Rcpp::export]]
+// Wrapper function to calculate conditional mutual information
+// [[Rcpp::export(rng = false)]]
 double RcppCMI(SEXP mat,
                Rcpp::IntegerVector target,
                Rcpp::IntegerVector interact,
