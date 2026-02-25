@@ -8,13 +8,41 @@
 #include "infotheo.hpp"
 #include "DataTrans.h"
 
-// Wrapper function to calculate shannon entropy
+// Wrapper function to calculate Shannon entropy
 // [[Rcpp::export(rng = false)]]
 double RcppEntropy(SEXP series,
                    double base = 2.0,
                    bool NA_rm = false)
 {
-    InfoTheo::PatternSeries s = to_series(series);
+    InfoTheo::PatternSeries s;
+
+    switch (TYPEOF(series))
+    {
+        case INTSXP:
+        {
+            Rcpp::IntegerVector v(series);
+            s = vec2pat(v);
+            break;
+        }
+
+        case REALSXP:
+        {
+            Rcpp::NumericVector v(series);
+            s = vec2pat(v);
+            break;
+        }
+
+        case STRSXP:
+        {
+            Rcpp::CharacterVector v(series);
+            s = vec2pat(v);
+            break;
+        }
+
+        default:
+            Rcpp::stop("Input must be Integer, Numeric, or Character vector.");
+    }
+
     return InfoTheo::Entropy(s, base, NA_rm);
 }
 
