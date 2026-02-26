@@ -152,5 +152,31 @@ double RcppCMI(SEXP mat,
     std::vector<size_t> i = Rcpp::as<std::vector<size_t>>(interact);
     std::vector<size_t> c = Rcpp::as<std::vector<size_t>>(conds);
 
+    const size_t n_cols = m.size();
+    for (auto& idx : t) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Target index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : i) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Interact index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : c) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Conds index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+
     return InfoTheo::CMI(m, t, i, c, base, NA_rm);
 }
