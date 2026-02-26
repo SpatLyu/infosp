@@ -51,6 +51,7 @@
 #include <stdexcept>
 #include <cstdint>
 #include "numericutils.hpp"
+#include "dist.hpp"
 
 namespace Projection
 {   
@@ -87,7 +88,12 @@ namespace Projection
         const std::vector<size_t>& pred,
         size_t num_neighbors = 4,
         std::string method = "euclidean")
-    {
+    {   
+        const DistanceMethod dist_method = Dist::parseDistanceMethod(method);
+        if (dist_method == Dist::DistanceMethod::Invalid) {
+            throw std::invalid_argument("Unsupported distance method: " + method);
+        }
+
         size_t N = target.size();
         std::vector<double> pred_t(N, std::numeric_limits<double>::quiet_NaN());
 
@@ -124,18 +130,35 @@ namespace Projection
                 for (size_t j = 0; j < embedding[p].size(); ++j) {
                     if (!std::isnan(embedding[i][j]) && !std::isnan(embedding[p][j])) {
                         double diff = embedding[i][j] - embedding[p][j];
-                        if (method == "euclidean") {
-                            sum_s += diff * diff;
-                        }
-                        else if (method == "manhattan") {
-                            sum_s += std::abs(diff);
-                        }
-                        else if (method == "maximum") {
-                            double ad = std::abs(diff);
-                            if (ad > maxv) maxv = ad;
-                        }
-                        else {
-                            throw std::invalid_argument("Unsupported distance method.");
+                        // if (method == "euclidean") {
+                        //     sum_s += diff * diff;
+                        // }
+                        // else if (method == "manhattan") {
+                        //     sum_s += std::abs(diff);
+                        // }
+                        // else if (method == "maximum") {
+                        //     double ad = std::abs(diff);
+                        //     if (ad > maxv) maxv = ad;
+                        // }
+                        // else {
+                        //     throw std::invalid_argument("Unsupported distance method.");
+                        // }
+
+                        switch (dist_method) {
+                            case Dist::DistanceMethod::Euclidean:
+                                sum_s += diff * diff;
+                                break;
+                            case Dist::DistanceMethod::Manhattan:
+                                sum_s += std::abs(diff);
+                                break;
+                            case Dist::DistanceMethod::Maximum:
+                                {
+                                    double ad = std::abs(diff);
+                                    if (ad > maxv) maxv = ad;
+                                }
+                                break;
+                            default:
+                                break; 
                         }
 
                         ++n_valid;
@@ -143,12 +166,19 @@ namespace Projection
                 }
 
                 if (n_valid > 0) {
-                    if (method == "euclidean")
+                    // if (method == "euclidean")
+                    //     distances.push_back(std::sqrt(sum_s));
+                    // else if (method == "manhattan")
+                    //     distances.push_back(sum_s);
+                    // else
+                    //     distances.push_back(maxv);
+
+                    if (dist_method == Dist::DistanceMethod::Euclidean)
                         distances.push_back(std::sqrt(sum_s));
-                    else if (method == "manhattan")
+                    else if (dist_method == Dist::DistanceMethod::Manhattan)
                         distances.push_back(sum_s);
                     else
-                        distances.push_back(maxv);
+                        distances.push_back(maxv);  // maximum
                     
                     valid_libs.push_back(i);    
                 }
