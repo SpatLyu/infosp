@@ -43,13 +43,13 @@
  *
  *  NA handling:
  *
- *    Controlled by the parameter NA_rm.
+ *    Controlled by the parameter na_rm.
  *
- *      NA_rm = true
+ *      na_rm = true
  *        Rows containing any NaN are replaced by a single-element
  *        pattern {0}, indicating invalid observation.
  *
- *      NA_rm = false
+ *      na_rm = false
  *        NaN values are encoded explicitly as symbol 0 inside the
  *        pattern vector.
  *
@@ -206,13 +206,13 @@ inline std::vector<std::vector<double>> GenSignatureSpace(
  *   std::vector<std::vector<uint8_t>>
  *   Each inner vector represents one pattern instance.
  *
- * Behavior controlled by NA_rm:
+ * Behavior controlled by na_rm:
  *
- *   NA_rm = true (default)
+ *   na_rm = true (default)
  *     - If a row contains any NaN, the entire pattern is replaced by a
  *       single-element vector {0}.
  *
- *   NA_rm = false
+ *   na_rm = false
  *     - All rows are encoded.
  *     - NaN values are encoded as 0 inside the pattern vector.
  *
@@ -221,8 +221,8 @@ inline std::vector<std::vector<double>> GenSignatureSpace(
  *   Input row:
  *     [ 0.1, -0.2, 0.0, NaN ]
  *
- *   NA_rm = true  -> {0}
- *   NA_rm = false -> {3, 1, 2, 0}
+ *   na_rm = true  -> {0}
+ *   na_rm = false -> {3, 1, 2, 0}
  *
  * Design rationale:
  *   - uint8_t encoding is memory efficient and cache friendly.
@@ -231,12 +231,12 @@ inline std::vector<std::vector<double>> GenSignatureSpace(
  *     estimators and bit packing pipelines.
  *
  * @param mat    Input signature matrix [n_rows x n_cols], may contain NaN.
- * @param NA_rm  Whether to remove rows containing NaN.
+ * @param na_rm  Whether to remove rows containing NaN.
  * @return       Vector of encoded patterns.
  */
 inline std::vector<std::vector<uint8_t>> GenPatternSpace(
     const std::vector<std::vector<double>>& mat,
-    bool NA_rm = true
+    bool na_rm = true
 ) {
     std::vector<std::vector<uint8_t>> patterns;
     if (mat.empty()) return patterns;
@@ -271,7 +271,7 @@ inline std::vector<std::vector<uint8_t>> GenPatternSpace(
         }
 
         // NA handling
-        if (NA_rm && has_nan) {
+        if (na_rm && has_nan) {
             patterns.emplace_back(std::vector<uint8_t>{0});
         } else {
             patterns.emplace_back(std::move(pat));
