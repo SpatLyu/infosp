@@ -127,7 +127,7 @@ double RcppMI(SEXP mat,
     }
     for (auto& idx : i) {
         if (idx < 1 || idx > n_cols) {
-            Rcpp::stop("Conds index %d out of bounds [1, %d]", 
+            Rcpp::stop("Interact index %d out of bounds [1, %d]", 
                        static_cast<int>(idx), 
                        static_cast<int>(n_cols));
         }
