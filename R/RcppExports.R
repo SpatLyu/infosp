@@ -53,3 +53,7 @@ RcppGenPatternSpace <- function(mat, NA_rm = TRUE) {
     .Call(`_infosp_RcppGenPatternSpace`, mat, NA_rm)
 }
 
+RcppCountSignProp <- function(pat1, pat2) {
+    .Call(`_infosp_RcppCountSignProp`, pat1, pat2)
+}
+

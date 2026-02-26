@@ -175,6 +175,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppCountSignProp
+Rcpp::NumericVector RcppCountSignProp(Rcpp::CharacterVector pat1, Rcpp::CharacterVector pat2);
+RcppExport SEXP _infosp_RcppCountSignProp(SEXP pat1SEXP, SEXP pat2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type pat1(pat1SEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type pat2(pat2SEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppCountSignProp(pat1, pat2));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppLaggedNeighbors4Lattice", (DL_FUNC) &_infosp_RcppLaggedNeighbors4Lattice, 3},
@@ -190,6 +201,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppCMI", (DL_FUNC) &_infosp_RcppCMI, 6},
     {"_infosp_RcppGenSignatureSpace", (DL_FUNC) &_infosp_RcppGenSignatureSpace, 2},
     {"_infosp_RcppGenPatternSpace", (DL_FUNC) &_infosp_RcppGenPatternSpace, 2},
+    {"_infosp_RcppCountSignProp", (DL_FUNC) &_infosp_RcppCountSignProp, 2},
     {NULL, NULL, 0}
 };
 
