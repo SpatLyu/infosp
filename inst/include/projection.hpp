@@ -60,7 +60,7 @@ namespace Projection
      *
      * Parameters:
      *      embedding     reconstructed state space
-     *      target        observed scalar response
+     *      target        observed response vector
      *      lib           library row indices
      *      pred          prediction row indices
      *      num_neighbors number of nearest neighbors
@@ -89,7 +89,7 @@ namespace Projection
         size_t num_neighbors = 4,
         std::string method = "euclidean")
     {   
-        const DistanceMethod dist_method = Dist::parseDistanceMethod(method);
+        const Dist::DistanceMethod dist_method = Dist::parseDistanceMethod(method);
         if (dist_method == Dist::DistanceMethod::Invalid) {
             throw std::invalid_argument("Unsupported distance method: " + method);
         }
