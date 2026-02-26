@@ -141,4 +141,82 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v);
  ********************************************************************/
 std::vector<std::vector<std::vector<uint8_t>>> mat2patmat(SEXP x);
 
+/********************************************************************
+ *  pat2vec
+ *
+ *  Convert a PatternSeries into an Rcpp::CharacterVector.
+ *
+ *  Input:
+ *      std::vector<std::vector<uint8_t>>
+ *
+ *      Each inner std::vector<uint8_t> represents one symbolic
+ *      pattern. Each element is a base-4 digit (0,1,2,3).
+ *
+ *  Conversion rule:
+ *      - Each uint8_t digit is converted to its ASCII character.
+ *      - Digits are concatenated without separator.
+ *      - The entire pattern becomes one std::string.
+ *      - Each pattern string becomes one element of the
+ *        resulting CharacterVector.
+ *
+ *  Example:
+ *      { {3,1,2,0}, {1}, {0} }
+ *
+ *      becomes
+ *
+ *      c("3120", "1", "0")
+ *
+ *  Notes:
+ *      - Order is preserved.
+ *      - No delimiter is inserted.
+ *      - Empty input returns empty CharacterVector.
+ *
+ ********************************************************************/
+Rcpp::CharacterVector
+pat2vec(const std::vector<std::vector<uint8_t>>& pat);
+
+/********************************************************************
+ *  patmat2mat
+ *
+ *  Convert a PatternMatrix into an Rcpp::CharacterMatrix.
+ *
+ *  Input structure:
+ *
+ *      std::vector<std::vector<std::vector<uint8_t>>>
+ *
+ *      Interpreted as:
+ *
+ *          patmat[var][obs]
+ *
+ *      Outer dimension  = variables (columns)
+ *      Inner dimension  = observations (rows)
+ *
+ *  Output structure:
+ *
+ *      Rcpp::CharacterMatrix
+ *
+ *          n rows = observations
+ *          p cols = variables
+ *
+ *  Conversion rule:
+ *      - Each pattern (std::vector<uint8_t>) is converted to a
+ *        string exactly as in pat2vec.
+ *      - Stored at position (obs, var).
+ *
+ *  Example:
+ *
+ *      patmat[0] = PatternSeries of variable 1
+ *      patmat[1] = PatternSeries of variable 2
+ *
+ *      Result:
+ *          matrix where column j corresponds to patmat[j]
+ *
+ *  Requirements:
+ *      - All PatternSeries must have equal length.
+ *      - Throws std::invalid_argument if inconsistent.
+ *
+ ********************************************************************/
+Rcpp::CharacterMatrix
+patmat2mat(const std::vector<std::vector<std::vector<uint8_t>>>& patmat);
+
 #endif // DataTrans_H
