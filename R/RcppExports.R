@@ -49,3 +49,7 @@ RcppGenSignatureSpace <- function(mat, relative = TRUE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }
 
+RcppGenPatternSpace <- function(mat, NA_rm = TRUE) {
+    .Call(`_infosp_RcppGenPatternSpace`, mat, NA_rm)
+}
+

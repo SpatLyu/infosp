@@ -164,6 +164,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppGenPatternSpace
+Rcpp::CharacterMatrix RcppGenPatternSpace(Rcpp::NumericMatrix mat, bool NA_rm);
+RcppExport SEXP _infosp_RcppGenPatternSpace(SEXP matSEXP, SEXP NA_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenPatternSpace(mat, NA_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppLaggedNeighbors4Lattice", (DL_FUNC) &_infosp_RcppLaggedNeighbors4Lattice, 3},
@@ -178,6 +189,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppMI", (DL_FUNC) &_infosp_RcppMI, 5},
     {"_infosp_RcppCMI", (DL_FUNC) &_infosp_RcppCMI, 6},
     {"_infosp_RcppGenSignatureSpace", (DL_FUNC) &_infosp_RcppGenSignatureSpace, 2},
+    {"_infosp_RcppGenPatternSpace", (DL_FUNC) &_infosp_RcppGenPatternSpace, 2},
     {NULL, NULL, 0}
 };
 
