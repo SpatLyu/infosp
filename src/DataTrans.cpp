@@ -212,10 +212,13 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::NumericVector& v)
 
     std::vector<double> uniq;
     uniq.reserve(v.size());
-
-    for (double val : v)
-        if (!Rcpp::NumericVector::is_na(val))
-            uniq.push_back(val);
+    
+    for (int i = 0; i < v.size(); ++i)
+        if (!Rcpp::NumericVector::is_na(v[i]))
+            uniq.push_back(v[i]);
+    // for (double val : v)
+    //     if (!Rcpp::NumericVector::is_na(val))
+    //         uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
@@ -224,18 +227,30 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::NumericVector& v)
     for (uint64_t i = 0; i < uniq.size(); ++i)
         dict[uniq[i]] = i;
 
-    for (double val : v)
+    for (int i = 0; i < v.size(); ++i)
     {
-        if (Rcpp::NumericVector::is_na(val))
+        if (Rcpp::NumericVector::is_na(v[i]))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
         else
         {
-            uint64_t idx = dict[val];
+            uint64_t idx = dict[v[i]];
             series.push_back( index2base4(idx) );
         }
     }
+    // for (double val : v)
+    // {
+    //     if (Rcpp::NumericVector::is_na(val))
+    //     {
+    //         series.push_back( std::vector<uint8_t>{0} );
+    //     }
+    //     else
+    //     {
+    //         uint64_t idx = dict[val];
+    //         series.push_back( index2base4(idx) );
+    //     }
+    // }
 
     return series;
 }
@@ -248,10 +263,10 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
 
     std::vector<std::string> uniq;
     uniq.reserve(v.size());
-
-    for (Rcpp::String s : v)
-        if (s != NA_STRING)
-            uniq.push_back(std::string(s));
+    
+    for (int i = 0; i < v.size(); ++i)
+        if (!Rcpp::CharacterVector::is_na(v[i]))
+            uniq.push_back(std::string(v[i]));
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
@@ -260,15 +275,15 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v)
     for (uint64_t i = 0; i < uniq.size(); ++i)
         dict[uniq[i]] = i;
 
-    for (Rcpp::String s : v)
+    for (int i = 0; i < v.size(); ++i)
     {
-        if (s == NA_STRING)
+        if (Rcpp::CharacterVector::is_na(v[i]))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
         else
         {
-            uint64_t idx = dict[std::string(s)];
+            uint64_t idx = dict[std::string(v[i])];
             series.push_back( index2base4(idx) );
         }
     }
