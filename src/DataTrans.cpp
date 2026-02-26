@@ -175,9 +175,12 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v)
     std::vector<int> uniq;
     uniq.reserve(v.size());
 
-    for (int val : v)
-        if (!Rcpp::IntegerVector::is_na(val))
-            uniq.push_back(val);
+    for (int i = 0; i < v.size(); ++i)
+        if (!Rcpp::IntegerVector::is_na(v[i]))
+            uniq.push_back(v[i]);
+    // for (int val : v)
+    //     if (!Rcpp::IntegerVector::is_na(val))
+    //         uniq.push_back(val);
 
     std::sort(uniq.begin(), uniq.end());
     uniq.erase(std::unique(uniq.begin(), uniq.end()), uniq.end());
@@ -188,18 +191,30 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::IntegerVector& v)
         dict[uniq[i]] = i;
 
     // 3. Encode each observation
-    for (int val : v)
+    for (int i = 0; i < v.size(); ++i)
     {
-        if (Rcpp::IntegerVector::is_na(val))
+        if (Rcpp::IntegerVector::is_na(v[i]))
         {
             series.push_back( std::vector<uint8_t>{0} );
         }
         else
         {
-            uint64_t idx = dict[val];
+            uint64_t idx = dict[v[i]];
             series.push_back( index2base4(idx) );
         }
     }
+    // for (int val : v)
+    // {
+    //     if (Rcpp::IntegerVector::is_na(val))
+    //     {
+    //         series.push_back( std::vector<uint8_t>{0} );
+    //     }
+    //     else
+    //     {
+    //         uint64_t idx = dict[val];
+    //         series.push_back( index2base4(idx) );
+    //     }
+    // }
 
     return series;
 }
