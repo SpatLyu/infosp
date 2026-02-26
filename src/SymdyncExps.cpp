@@ -78,7 +78,7 @@ Rcpp::NumericVector RcppCountSignProp(
     auto result = SymDync::CountSignProp(p1, p2);
 
     return Rcpp::NumericVector::create(
-        result[0],
-        result[1]
+        Rcpp::Named("pos_prop") = result[0],
+        Rcpp::Named("neg_prop") = result[1]
     );
 }
