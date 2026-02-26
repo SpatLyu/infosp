@@ -152,7 +152,7 @@ std::vector<uint8_t> index2base4(uint64_t idx)
  *  Design:
  *      - Extract unique non NA values
  *      - Sort from low to high
- *      - Assign increasing index 0,1,2,...
+ *      - Assign increasing index 1,2,3,...
  *      - Encode index in base 4
  *      - Each observation becomes one Pattern
  *
