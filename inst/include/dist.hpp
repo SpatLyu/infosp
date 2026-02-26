@@ -32,6 +32,7 @@
 #include <limits>
 #include <string>
 #include <numeric>
+#include <cstdint>
 #include <stdexcept>
 #include <algorithm>
 
@@ -249,7 +250,7 @@ namespace Dist
         std::string method = "euclidean",
         bool na_rm = true)
     {   
-        if (vec1.empty() || vec1.empty() || vec1.size() != vec2.size())
+        if (vec1.empty() || vec2.empty() || vec1.size() != vec2.size())
             return std::numeric_limits<double>::quiet_NaN();
 
         const DistanceMethod dist_method = parseDistanceMethod(method);
@@ -328,6 +329,8 @@ namespace Dist
                 std::numeric_limits<double>::quiet_NaN()));
 
         for (size_t i = 0; i < n; ++i) {
+            distm[i][i] = 0.0;
+
             for (size_t j = i+1; j < n; ++j) 
             { 
                 // double distv = Dist(mat[i], mat[j], method, na_rm);
@@ -438,6 +441,12 @@ namespace Dist
             {
                 const size_t lj = lib[j];
 
+                if (pi == lj) 
+                {
+                    distm[pi][lj] = 0.0;
+                    continue;
+                }
+
                 // distm[pi][lj] = Dist(
                 //     mat[pi],
                 //     mat[lj],
@@ -493,7 +502,7 @@ namespace Dist
                 else
                     distv = maxv;  // maximum
 
-                distm[pi][lj] = distv
+                distm[pi][lj] = distv;
             }
         }
 
