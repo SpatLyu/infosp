@@ -108,6 +108,7 @@ namespace InfoTheo
         // ---------- Pattern-level NA ----------
         if (NA_rm && p.size() == 1 && p[0] == 0)
             return false;
+        
         key.blocks.clear();
 
         uint64_t cur = 0;
