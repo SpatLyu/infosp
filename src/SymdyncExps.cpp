@@ -46,7 +46,7 @@ Rcpp::NumericMatrix RcppGenSignatureSpace(
 // [[Rcpp::export(rng = false)]]
 Rcpp::CharacterVector RcppGenPatternSpace(
     Rcpp::NumericMatrix mat,
-    bool NA_rm = true
+    bool na_rm = true
 )
 {
     const size_t n_rows = mat.nrow();
@@ -61,7 +61,7 @@ Rcpp::CharacterVector RcppGenPatternSpace(
         for (size_t j = 0; j < n_cols; ++j)
             input[i][j] = mat(i, j);
 
-    auto pat = SymDync::GenPatternSpace(input, NA_rm);
+    auto pat = SymDync::GenPatternSpace(input, na_rm);
     return pat2vec(pat);
 }
 
