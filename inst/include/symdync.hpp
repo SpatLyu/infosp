@@ -3,103 +3,166 @@
  *  File: symdync.hpp
  *
  *  Symbolic Dynamics Utilities for High Performance
- *  Pattern Construction and Encoding.
+ *  Pattern Construction, Encoding and Causality Analysis
  *
- *  This header provides lightweight and efficient utilities
- *  for transforming continuous state space data into symbolic
- *  pattern representations suitable for large scale causal,
- *  information theoretic and dynamical systems analysis.
+ *  ----------------------------------------------------------------
+ *  Overview
+ *  ----------------------------------------------------------------
  *
- *  Core functionalities:
+ *  This header provides lightweight and computationally efficient
+ *  utilities for transforming continuous state space data into
+ *  symbolic representations suitable for large scale dynamical,
+ *  causal and information theoretic analysis.
  *
- *    1. GenSignatureSpace
- *       - Converts a continuous state space matrix into a
- *         signature space matrix by computing successive
- *         differences or relative changes.
+ *  The implementation is designed for high dimensional,
+ *  high frequency and large sample size scenarios where memory
+ *  efficiency and deterministic behavior are critical.
  *
- *    2. GenPatternSpace
- *       - Converts a continuous signature matrix into compact
- *         discrete pattern representations using uint8 encoding.
+ *  ----------------------------------------------------------------
+ *  Core Functionalities
+ *  ----------------------------------------------------------------
  *
- *    3. CountSignProp
- *       - Compares two pattern spaces and computes the
- *         proportion of sign agreement and disagreement.
+ *  1. GenSignatureSpace
  *
- *  Data conventions:
+ *     Converts a continuous state space matrix into a signature
+ *     space matrix by computing successive differences or relative
+ *     changes between adjacent time steps.
  *
- *    Signature matrix:
+ *  2. GenPatternSpace
+ *
+ *     Converts a continuous signature matrix into compact discrete
+ *     symbolic patterns using uint8 encoding.
+ *
+ *     Output is a pattern space represented as:
+ *
+ *         std::vector<std::vector<uint8_t>>
+ *
+ *  3. CountSignProp
+ *
+ *     Compares two symbolic pattern spaces and computes the
+ *     proportion of sign agreement and disagreement.
+ *
+ *  4. ComputePatternCausality
+ *
+ *     Constructs a complete symbolic pattern space, enforces
+ *     symmetric closure, builds a causal heatmap and classifies
+ *     each observation into:
+ *
+ *         0  No causality
+ *         1  Positive causality
+ *         2  Negative causality
+ *         3  Dark causality
+ *
+ *     Returns detailed per observation results and aggregated
+ *     metrics.
+ *
+ *  ----------------------------------------------------------------
+ *  Data Conventions
+ *  ----------------------------------------------------------------
+ *
+ *  Signature Matrix:
+ *
  *      std::vector<std::vector<double>>
  *      Dimension: [n_rows x n_cols]
  *
- *    Pattern representation:
+ *  Pattern Representation:
+ *
  *      std::vector<std::vector<uint8_t>>
  *      Dimension: [n_rows x pattern_length]
  *
- *    Symbol encoding:
- *      0  -> NA / undefined
+ *  Symbol Encoding:
+ *
+ *      0  -> NA or undefined
  *      1  -> Downward change
- *      2  -> No change / Stable
+ *      2  -> Stable or no change
  *      3  -> Upward change
  *
- *  NA handling:
+ *  ----------------------------------------------------------------
+ *  NA Handling
+ *  ----------------------------------------------------------------
  *
- *    Controlled by the parameter na_rm.
+ *  Controlled by the parameter `na_rm`.
  *
  *      na_rm = true
- *        Rows containing any NaN are replaced by a single-element
- *        pattern {0}, indicating invalid observation.
+ *
+ *          Any row containing NaN is replaced by a single element
+ *          pattern {0}, marking the observation as invalid.
  *
  *      na_rm = false
- *        NaN values are encoded explicitly as symbol 0 inside the
- *        pattern vector.
  *
- *  Sign comparison rule:
+ *          NaN values are encoded explicitly as symbol 0 inside
+ *          the pattern vector.
  *
- *      Valid comparison requires both symbols != 0.
+ *  ----------------------------------------------------------------
+ *  Sign Comparison Rules
+ *  ----------------------------------------------------------------
  *
- *      Positive agreement:
- *          (1,1), (2,2), (3,3)
+ *  Valid comparison requires both symbols to be non zero.
  *
- *      Negative agreement:
- *          (1,3), (3,1)
+ *  Positive agreement:
  *
- *      Symbol 2 only matches positively with 2.
+ *      (1,1), (2,2), (3,3)
+ *
+ *  Negative agreement:
+ *
+ *      (1,3), (3,1)
+ *
+ *  Symbol 2 only matches positively with 2.
  *
  *  Output of CountSignProp:
  *
- *      std::vector<double> size 2:
+ *      std::vector<double> of size 2:
+ *
  *          [ positive_ratio , negative_ratio ]
  *
- *      If no valid comparisons exist,
- *      both values are returned as NaN.
+ *      If no valid comparisons exist, both values are NaN.
  *
- *  Design principles:
+ *  ----------------------------------------------------------------
+ *  Design Principles
+ *  ----------------------------------------------------------------
  *
- *    - Memory efficiency
- *      Uses uint8 storage instead of string representations to
- *      minimize memory footprint and allocator overhead.
+ *  1. Memory efficiency
  *
- *    - Cache friendliness
- *      Patterns are stored in contiguous memory layouts for
- *      high throughput numerical processing.
+ *     Uses uint8 storage instead of string encoding to minimize
+ *     memory footprint and allocator overhead.
  *
- *    - Performance scalability
- *      Suitable for millions of observations and seamless
- *      integration with high performance hashing and bit packing
- *      pipelines.
+ *  2. Cache friendliness
  *
- *    - Interoperability
- *      Pattern encoding is directly compatible with downstream
- *      information theoretic estimators and symbolic causal models.
+ *     Patterns are stored in contiguous memory layouts to
+ *     maximize throughput in numerical pipelines.
  *
- *  Intended usage:
+ *  3. Deterministic indexing
+ *
+ *     Pattern space is lexicographically sorted and symmetrically
+ *     completed to guarantee stable and reproducible indexing.
+ *
+ *  4. Performance scalability
+ *
+ *     Suitable for millions of observations and seamless
+ *     integration with high performance hashing or bit packing
+ *     pipelines.
+ *
+ *  5. Interoperability
+ *
+ *     Pattern encoding is directly compatible with downstream
+ *     information theoretic estimators, entropy calculations
+ *     and symbolic causal inference frameworks.
+ *
+ *  ----------------------------------------------------------------
+ *  Intended Applications
+ *  ----------------------------------------------------------------
  *
  *    - Symbolic dynamics
  *    - Spatio temporal pattern mining
  *    - Information theoretic analysis
+ *    - Nonlinear system modeling
  *    - Causal pattern discovery
  *
- *  Author: Wenbo Lyu (Github: @SpatLyu)
+ *  ----------------------------------------------------------------
+ *  Author
+ *  ----------------------------------------------------------------
+ *
+ *  Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
  *
  ***************************************************************/
@@ -115,6 +178,10 @@
 #include <algorithm>
 #include <stdexcept>
 #include <cstdint>
+#include <iterator>
+#include <functional> 
+#include <unordered_map>
+#include <unordered_set>
 #include "numericutils.hpp"
 
 namespace SymDync
@@ -399,6 +466,317 @@ inline std::vector<double> CountSignProp(
     }
 
     return result;
+}
+
+/***************************************************************
+ *
+ *  Symbolic Pattern Causality
+ *
+ *  Lightweight high performance implementation.
+ *
+ *  Design principles:
+ *
+ *    - Uses uint8 pattern representation
+ *    - 2 bit packing per symbol
+ *    - Deterministic pattern indexing
+ *    - Symmetric pattern space completion
+ *    - Single computation function
+ *    - Minimal auxiliary utilities
+ *
+ ***************************************************************/
+
+struct PatternCausalityRes
+{
+    std::vector<double> NoCausality;
+    std::vector<double> PositiveCausality;
+    std::vector<double> NegativeCausality;
+    std::vector<double> DarkCausality;
+
+    std::vector<int> PatternTypes;
+    std::vector<int> RealLoop;
+
+    std::vector<std::vector<uint8_t>> PatternSpace;
+    std::vector<std::vector<double>> Heatmap;
+
+    double TotalPositive = std::numeric_limits<double>::quiet_NaN();
+    double TotalNegative = std::numeric_limits<double>::quiet_NaN();
+    double TotalDark     = std::numeric_limits<double>::quiet_NaN();
+};
+
+/* ---------------------------------------------------------
+ *   Robust Hash Function for std::pair<size_t, size_t>
+ *   Uses Boost-style hash_combine for minimal collisions
+ * --------------------------------------------------------- */
+struct PairHash {
+    size_t operator()(const std::pair<size_t, size_t>& p) const {
+        size_t seed = std::hash<size_t>{}(p.first);
+        seed ^= std::hash<size_t>{}(p.second) + 0x9e3779b9 + 
+                (seed << 6) + (seed >> 2);
+        return seed;
+    }
+};
+
+/**
+ * ---------------------------------------------------------------------------
+ * @brief Compute symbolic pattern causality between X and Y.
+ *
+ * This function operates entirely on uint8 symbolic patterns generated
+ * by GenPatternSpace.
+ *
+ * Pipeline:
+ *
+ *  1. Collect unique patterns from X, Y_real and Y_pred.
+ *  2. Remove patterns containing symbol 0.
+ *  3. Add symmetric opposite patterns (1 <-> 3).
+ *  4. Sort lexicographically to obtain deterministic indexing.
+ *  5. Build K x K causal heatmap.
+ *  6. Classify each observation:
+ *
+ *       0  No causality
+ *       1  Positive     (main diagonal)
+ *       2  Negative     (anti diagonal)
+ *       3  Dark         (other off diagonal)
+ *
+ *  7. Optional strength weighting:
+ *
+ *       erf( ||pred_Y|| / (||Y|| + 1e-6) )
+ *
+ * Pattern space completeness is guaranteed.
+ *
+ * ---------------------------------------------------------------------------
+ */
+inline PatternCausalityRes ComputePatternCausality(
+    const std::vector<std::vector<double>>& SMx,
+    const std::vector<std::vector<double>>& SMy,
+    const std::vector<std::vector<double>>& pred_SMy,
+    bool weighted = true
+)
+{
+    PatternCausalityRes res;
+
+    const size_t n = PX.size();
+    if (n == 0) return res;
+    
+    /* ------------------------------------------------------------
+     *  1. Generate symbolic pattern
+     * ------------------------------------------------------------ */
+    std::vector<std::vector<uint8_t>> PX = GenPatternSpace(SMx, true);
+    std::vector<std::vector<uint8_t>> PY = GenPatternSpace(SMy, true);
+    std::vector<std::vector<uint8_t>> PY_pred = GenPatternSpace(pred_SMy, true);
+
+    /* ------------------------------------------------------------
+     *  2. Collect and filter pattern space
+     * ------------------------------------------------------------ */
+    std::vector<std::vector<uint8_t>> all_patterns;
+    all_patterns.reserve(n * 3);
+
+    auto contains_zero = [](const std::vector<uint8_t>& p)
+    {
+        for (uint8_t v : p) if (v == 0) return true;
+        return false;
+    };
+
+    for (size_t i = 0; i < n; ++i)
+    {
+        if (!contains_zero(PX[i]))       all_patterns.push_back(PX[i]);
+        if (!contains_zero(PY_real[i]))  all_patterns.push_back(PY_real[i]);
+        if (!contains_zero(PY_pred[i]))  all_patterns.push_back(PY_pred[i]);
+    }
+
+    if (all_patterns.empty()) return res;
+
+    std::sort(all_patterns.begin(), all_patterns.end());
+    all_patterns.erase(
+        std::unique(all_patterns.begin(), all_patterns.end()),
+        all_patterns.end()
+    );
+
+    /* ------------------------------------------------------------
+     *  3. Symmetric closure
+     * ------------------------------------------------------------ */
+    size_t original_size = all_patterns.size();
+
+    for (size_t i = 0; i < original_size; ++i)
+    {
+        std::vector<uint8_t> opp = all_patterns[i];
+        for (auto& v : opp)
+        {
+            if (v == 1) v = 3;
+            else if (v == 3) v = 1;
+        }
+        all_patterns.push_back(std::move(opp));
+    }
+
+    std::sort(all_patterns.begin(), all_patterns.end());
+    all_patterns.erase(
+        std::unique(all_patterns.begin(), all_patterns.end()),
+        all_patterns.end()
+    );
+
+    const size_t K = all_patterns.size();
+    if (K == 0) return res;
+
+    res.PatternSpace = all_patterns;
+
+    /* ------------------------------------------------------------
+     *  4. Heatmap structures
+     * ------------------------------------------------------------ */
+    std::vector<std::vector<double>> heatmap(
+        K, std::vector<double>(K, std::numeric_limits<double>::quiet_NaN())
+    );
+
+    std::vector<std::vector<size_t>> counts(
+        K, std::vector<size_t>(K, 0)
+    );
+
+    res.NoCausality.assign(n, 0.0);
+    res.PositiveCausality.assign(n, 0.0);
+    res.NegativeCausality.assign(n, 0.0);
+    res.DarkCausality.assign(n, 0.0);
+    res.PatternTypes.reserve(n);
+    res.RealLoop.reserve(n);
+
+    const double midpoint = static_cast<double>(K - 1) / 2.0;
+
+    /* ------------------------------------------------------------
+     *  5. Norm utility
+     * ------------------------------------------------------------ */
+    auto norm_ignore_nan = [](const std::vector<double>& v)
+    {
+        double sum = 0.0;
+        for (double x : v)
+            if (!std::isnan(x)) sum += x * x;
+        return std::sqrt(sum);
+    };
+
+    /* ------------------------------------------------------------
+     *  6. Main loop
+     * ------------------------------------------------------------ */
+    for (size_t t = 0; t < n; ++t)
+    {
+        if (contains_zero(PX[t]) ||
+            contains_zero(PY_real[t]) ||
+            contains_zero(PY_pred[t]))
+            continue;
+
+        auto it_i = std::lower_bound(all_patterns.begin(), all_patterns.end(), PX[t]);
+        auto it_j = std::lower_bound(all_patterns.begin(), all_patterns.end(), PY_pred[t]);
+
+        if (it_i == all_patterns.end() || it_j == all_patterns.end())
+            continue;
+
+        size_t i = std::distance(all_patterns.begin(), it_i);
+        size_t j = std::distance(all_patterns.begin(), it_j);
+
+        res.RealLoop.push_back(static_cast<int>(t));
+
+        double strength = 0.0;
+
+        if (PY_pred[t] == PY_real[t])
+        {
+            strength = weighted
+                ? std::erf(
+                    norm_ignore_nan(pred_SMy[t]) /
+                    (norm_ignore_nan(SMy[t]) + 1e-6))
+                : 1.0;
+        }
+
+        if (std::isnan(heatmap[i][j]))
+        {
+            heatmap[i][j] = strength;
+            counts[i][j] = 1;
+        }
+        else
+        {
+            heatmap[i][j] += strength;
+            counts[i][j] += 1;
+        }
+
+        if (strength == 0.0)
+        {
+            res.NoCausality[t] = 1.0;
+            res.PatternTypes.push_back(0);
+        }
+        else if (i == j && static_cast<double>(i) != midpoint)
+        {
+            res.PositiveCausality[t] = strength;
+            res.PatternTypes.push_back(1);
+        }
+        else if ((i + j) == (K - 1) && static_cast<double>(i) != midpoint)
+        {
+            res.NegativeCausality[t] = strength;
+            res.PatternTypes.push_back(2);
+        }
+        else
+        {
+            res.DarkCausality[t] = strength;
+            res.PatternTypes.push_back(3);
+        }
+    }
+
+    /* ------------------------------------------------------------
+     *  7. Normalize heatmap
+     * ------------------------------------------------------------ */
+    for (size_t i = 0; i < K; ++i)
+    {
+        for (size_t j = 0; j < K; ++j)
+        {
+            if (counts[i][j] > 0)
+                heatmap[i][j] /= static_cast<double>(counts[i][j]);
+            else
+                heatmap[i][j] = std::numeric_limits<double>::quiet_NaN();
+        }
+    }
+
+    /* ------------------------------------------------------------
+     *  8. Aggregated metrics
+     * ------------------------------------------------------------ */
+    std::vector<double> diag_vals;
+    std::vector<double> anti_vals;
+    std::vector<double> other_vals;
+
+    for (size_t i = 0; i < K; ++i)
+    {
+        if (!std::isnan(heatmap[i][i]))
+            diag_vals.push_back(heatmap[i][i]);
+
+        size_t anti_j = K - 1 - i;
+
+        if (!std::isnan(heatmap[i][anti_j]))
+            anti_vals.push_back(heatmap[i][anti_j]);
+
+        for (size_t j = 0; j < K; ++j)
+        {
+            if (j == i || j == anti_j) continue;
+            if (!std::isnan(heatmap[i][j]))
+                other_vals.push_back(heatmap[i][j]);
+        }
+    }
+
+    auto nanmean = [](const std::vector<double>& v)
+    {
+        double s = 0.0;
+        size_t c = 0;
+        for (double x : v)
+        {
+            if (!std::isnan(x))
+            {
+                s += x;
+                ++c;
+            }
+        }
+        return c > 0
+            ? s / static_cast<double>(c)
+            : std::numeric_limits<double>::quiet_NaN();
+    };
+
+    res.TotalPositive = nanmean(diag_vals);
+    res.TotalNegative = nanmean(anti_vals);
+    res.TotalDark     = nanmean(other_vals);
+
+    res.Heatmap = std::move(heatmap);
+
+    return res;
 }
 
 } // namespace SymDync
