@@ -98,15 +98,15 @@ namespace InfoTheo
 
     /***********************************************************
      * Pack one pattern sequence into PackedKey
-     * Return false if NA detected and NA_rm == true
+     * Return false if NA detected and na_rm == true
      ***********************************************************/
     inline bool pack_pattern(
         const Pattern& p,
         PackedKey& key,
-        bool NA_rm)
+        bool na_rm = true)
     {   
         // ---------- Pattern-level NA ----------
-        if (NA_rm && p.size() == 1 && p[0] == 0)
+        if (na_rm && p.size() == 1 && p[0] == 0)
             return false;
 
         key.blocks.clear();
@@ -142,7 +142,7 @@ namespace InfoTheo
         const std::vector<size_t>& vars,
         size_t obs_id,
         PackedKey& key,
-        bool NA_rm = false)
+        bool na_rm = true)
     {
         key.blocks.clear();
 
@@ -154,7 +154,7 @@ namespace InfoTheo
             const Pattern& p = mat[v][obs_id];
 
             // ---------- Pattern-level NA ----------
-            if (NA_rm && p.size() == 1 && p[0] == 0)
+            if (na_rm && p.size() == 1 && p[0] == 0)
                 return false;
 
             for (uint8_t x : p)
@@ -184,7 +184,7 @@ namespace InfoTheo
     inline double Entropy(
         const PatternSeries& series,
         double base = 2.0,
-        bool NA_rm = false)
+        bool na_rm = true)
     {
         if (series.empty())
             return std::numeric_limits<double>::quiet_NaN();
@@ -197,7 +197,7 @@ namespace InfoTheo
 
         for (const auto& p : series)
         {
-            if (!pack_pattern(p, key, NA_rm))
+            if (!pack_pattern(p, key, na_rm))
                 continue;
 
             ++freq[key];
@@ -222,7 +222,7 @@ namespace InfoTheo
         const Matrix& mat,
         const std::vector<size_t>& vars,
         double base = 2.0,
-        bool NA_rm = false)
+        bool na_rm = true)
     {
         if (mat.empty() || vars.empty())
             return std::numeric_limits<double>::quiet_NaN();
@@ -247,7 +247,7 @@ namespace InfoTheo
 
         for (size_t i = 0; i < n_obs; ++i)
         {
-            if (!pack_observation(mat, clean_vars, i, key, NA_rm))
+            if (!pack_observation(mat, clean_vars, i, key, na_rm))
                 continue;
 
             ++freq[key];
@@ -274,7 +274,7 @@ namespace InfoTheo
         const std::vector<size_t>& target,
         const std::vector<size_t>& conds,
         double base = 2.0,
-        bool NA_rm = false)
+        bool na_rm = true)
     {
         if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
 
@@ -286,8 +286,8 @@ namespace InfoTheo
         std::vector<size_t> tc = conds;
         tc.insert(tc.end(), target.begin(), target.end());
 
-        return JE(mat, tc, base, NA_rm)
-             - JE(mat, conds, base, NA_rm);
+        return JE(mat, tc, base, na_rm)
+             - JE(mat, conds, base, na_rm);
     }
 
     /***********************************************************
@@ -298,7 +298,7 @@ namespace InfoTheo
         const std::vector<size_t>& target,
         const std::vector<size_t>& interact,
         double base = 2.0,
-        bool NA_rm = false)
+        bool na_rm = true)
     {
         if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
 
@@ -310,9 +310,9 @@ namespace InfoTheo
         std::vector<size_t> ti = interact;
         ti.insert(ti.end(), target.begin(), target.end());
 
-        return JE(mat, target, base, NA_rm) +
-               JE(mat, interact, base, NA_rm) -
-               JE(mat, ti, base, NA_rm);
+        return JE(mat, target, base, na_rm) +
+               JE(mat, interact, base, na_rm) -
+               JE(mat, ti, base, na_rm);
     }
 
     /***********************************************************
@@ -325,7 +325,7 @@ namespace InfoTheo
         const std::vector<size_t>& interact,
         const std::vector<size_t>& conds,
         double base = 2.0,
-        bool NA_rm = false)
+        bool na_rm = true)
     {
         if (mat.empty() || target.empty()) return std::numeric_limits<double>::quiet_NaN();
 
@@ -343,10 +343,10 @@ namespace InfoTheo
         cti.insert(cti.end(), target.begin(), target.end());
         cti.insert(cti.end(), interact.begin(), interact.end());
 
-        return JE(mat, ct,  base, NA_rm)
-             + JE(mat, ci,  base, NA_rm)
-             - JE(mat, conds, base, NA_rm)
-             - JE(mat, cti, base, NA_rm);
+        return JE(mat, ct,  base, na_rm)
+             + JE(mat, ci,  base, na_rm)
+             - JE(mat, conds, base, na_rm)
+             - JE(mat, cti, base, na_rm);
     }
 
 } // namespace InfoTheo
