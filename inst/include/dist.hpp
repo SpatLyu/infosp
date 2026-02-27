@@ -82,15 +82,6 @@ namespace Dist
         return result;
     }
 
-    inline std::vector<double> dist(
-        const std::vector<double>& vec,
-        const double scalar,
-        std::string method = "euclidean",
-        bool na_rm = true)
-    {
-        return dist(scalar, vec, method, na_rm);
-    }
-
     /***********************************************************
      * Vector - Scalar
      * Result length equals vector length
