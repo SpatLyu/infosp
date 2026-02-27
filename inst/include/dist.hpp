@@ -156,29 +156,10 @@ namespace Dist
      ***********************************************************/
     inline std::vector<double> dist(
         const std::vector<double>& vec1,
-        const std::vector<double>& vec2,
-        bool na_rm = true)
+        const std::vector<double>& vec2)
     {
         if (vec1.size() != vec2.size())
             throw std::invalid_argument("Vectors must have equal length.");
-
-        if (!na_rm)
-        {
-            for (size_t i = 0; i < vec1.size(); ++i)
-            {
-                if (std::isnan(vec1[i]) || std::isnan(vec2[i]))
-                    return std::vector<double>(
-                        vec1.size(),
-                        std::numeric_limits<double>::quiet_NaN());
-            }
-
-            std::vector<double> result(vec1.size());
-            for (size_t i = 0; i < vec1.size(); ++i)
-            {
-                result[i] = std::abs(vec1[i] - vec2[i]);
-            }
-            return result;
-        }
 
         std::vector<double> result(vec1.size(),
             std::numeric_limits<double>::quiet_NaN());
