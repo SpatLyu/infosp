@@ -86,61 +86,61 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppEntropy
-double RcppEntropy(SEXP series, double base, bool NA_rm);
-RcppExport SEXP _infosp_RcppEntropy(SEXP seriesSEXP, SEXP baseSEXP, SEXP NA_rmSEXP) {
+double RcppEntropy(SEXP series, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppEntropy(SEXP seriesSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type series(seriesSEXP);
     Rcpp::traits::input_parameter< double >::type base(baseSEXP);
-    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppEntropy(series, base, NA_rm));
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppEntropy(series, base, na_rm));
     return rcpp_result_gen;
 END_RCPP
 }
 // RcppJE
-double RcppJE(SEXP mat, Rcpp::IntegerVector vars, double base, bool NA_rm);
-RcppExport SEXP _infosp_RcppJE(SEXP matSEXP, SEXP varsSEXP, SEXP baseSEXP, SEXP NA_rmSEXP) {
+double RcppJE(SEXP mat, Rcpp::IntegerVector vars, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppJE(SEXP matSEXP, SEXP varsSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type vars(varsSEXP);
     Rcpp::traits::input_parameter< double >::type base(baseSEXP);
-    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppJE(mat, vars, base, NA_rm));
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppJE(mat, vars, base, na_rm));
     return rcpp_result_gen;
 END_RCPP
 }
 // RcppCE
-double RcppCE(SEXP mat, Rcpp::IntegerVector target, Rcpp::IntegerVector conds, double base, bool NA_rm);
-RcppExport SEXP _infosp_RcppCE(SEXP matSEXP, SEXP targetSEXP, SEXP condsSEXP, SEXP baseSEXP, SEXP NA_rmSEXP) {
+double RcppCE(SEXP mat, Rcpp::IntegerVector target, Rcpp::IntegerVector conds, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppCE(SEXP matSEXP, SEXP targetSEXP, SEXP condsSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type target(targetSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type conds(condsSEXP);
     Rcpp::traits::input_parameter< double >::type base(baseSEXP);
-    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppCE(mat, target, conds, base, NA_rm));
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppCE(mat, target, conds, base, na_rm));
     return rcpp_result_gen;
 END_RCPP
 }
 // RcppMI
-double RcppMI(SEXP mat, Rcpp::IntegerVector target, Rcpp::IntegerVector interact, double base, bool NA_rm);
-RcppExport SEXP _infosp_RcppMI(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP baseSEXP, SEXP NA_rmSEXP) {
+double RcppMI(SEXP mat, Rcpp::IntegerVector target, Rcpp::IntegerVector interact, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppMI(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type target(targetSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type interact(interactSEXP);
     Rcpp::traits::input_parameter< double >::type base(baseSEXP);
-    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppMI(mat, target, interact, base, NA_rm));
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppMI(mat, target, interact, base, na_rm));
     return rcpp_result_gen;
 END_RCPP
 }
 // RcppCMI
-double RcppCMI(SEXP mat, Rcpp::IntegerVector target, Rcpp::IntegerVector interact, Rcpp::IntegerVector conds, double base, bool NA_rm);
-RcppExport SEXP _infosp_RcppCMI(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP condsSEXP, SEXP baseSEXP, SEXP NA_rmSEXP) {
+double RcppCMI(SEXP mat, Rcpp::IntegerVector target, Rcpp::IntegerVector interact, Rcpp::IntegerVector conds, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppCMI(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP condsSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
@@ -148,8 +148,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type interact(interactSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type conds(condsSEXP);
     Rcpp::traits::input_parameter< double >::type base(baseSEXP);
-    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppCMI(mat, target, interact, conds, base, NA_rm));
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppCMI(mat, target, interact, conds, base, na_rm));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -165,13 +165,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppGenPatternSpace
-Rcpp::CharacterVector RcppGenPatternSpace(Rcpp::NumericMatrix mat, bool NA_rm);
-RcppExport SEXP _infosp_RcppGenPatternSpace(SEXP matSEXP, SEXP NA_rmSEXP) {
+Rcpp::CharacterVector RcppGenPatternSpace(Rcpp::NumericMatrix mat, bool na_rm);
+RcppExport SEXP _infosp_RcppGenPatternSpace(SEXP matSEXP, SEXP na_rmSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type mat(matSEXP);
-    Rcpp::traits::input_parameter< bool >::type NA_rm(NA_rmSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppGenPatternSpace(mat, NA_rm));
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenPatternSpace(mat, na_rm));
     return rcpp_result_gen;
 END_RCPP
 }
