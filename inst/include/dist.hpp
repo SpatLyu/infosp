@@ -82,6 +82,39 @@ namespace Dist
         return result;
     }
 
+    inline std::vector<double> dist(
+        const std::vector<double>& vec,
+        const double scalar,
+        std::string method = "euclidean",
+        bool na_rm = true)
+    {
+        return dist(scalar, vec, method, na_rm);
+    }
+
+    /***********************************************************
+     * Vector - Scalar
+     * Result length equals vector length
+     ***********************************************************/
+    inline double dist(
+        const std::vector<double>& vec,
+        const double scalar,
+        std::string method = "euclidean",
+        bool na_rm = true)
+    {
+        std::vector<double> result(vec.size(),
+            std::numeric_limits<double>::quiet_NaN());
+
+        for (size_t i = 0; i < vec.size(); ++i)
+        {
+            if (na_rm && (std::isnan(vec[i]) || std::isnan(scalar)))
+                continue;
+
+            result[i] = std::abs(vec[i] - scalar);
+        }
+
+        return result;
+    }
+
     /***********************************************************
      * Vector - Vector
      * Element-wise distance
