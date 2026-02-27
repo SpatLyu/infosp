@@ -42,20 +42,12 @@ namespace Dist
     inline double dist(
         const double scalar1,
         const double scalar2,
-        std::string method = "euclidean",
         bool na_rm = true)
     {
         if (na_rm && (std::isnan(scalar1) || std::isnan(scalar2)))
             return std::numeric_limits<double>::quiet_NaN();
 
-        if (method == "euclidean" ||
-            method == "manhattan" ||
-            method == "maximum")
-        {
-            return std::abs(scalar1 - scalar2);
-        }
-
-        throw std::invalid_argument("Unsupported distance method.");
+        return std::abs(scalar1 - scalar2);
     }
 
     /***********************************************************
