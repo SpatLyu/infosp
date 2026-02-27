@@ -57,7 +57,6 @@ namespace Dist
     inline std::vector<double> dist(
         const double scalar,
         const std::vector<double>& vec,
-        std::string method = "euclidean",
         bool na_rm = true)
     {
         std::vector<double> result(vec.size(),
