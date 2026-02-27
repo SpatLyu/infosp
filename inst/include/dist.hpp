@@ -141,6 +141,15 @@ namespace Dist
             return maxv;  // maximum
     }
 
+    inline double dist(
+        const double scalar,
+        const std::vector<double>& vec,
+        std::string method = "euclidean",
+        bool na_rm = true)
+    {
+        return dist(vec, scalar, method, na_rm);
+    }
+
     /***********************************************************
      * Vector - Vector
      * Element-wise distance
