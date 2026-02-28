@@ -51,7 +51,7 @@
 #include <stdexcept>
 #include <cstdint>
 #include "numericutils.hpp"
-#include "dist.hpp"
+#include "distance.hpp"
 
 namespace Projection
 {   

@@ -4,7 +4,7 @@
 #include <limits>
 #include <numeric>
 #include <algorithm>
-#include "dist.hpp"
+#include "distance.hpp"
 #include <Rcpp.h>
 
 // Wrapper function to compute the distance between two vectors
