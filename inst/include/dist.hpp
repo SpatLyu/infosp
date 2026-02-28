@@ -188,11 +188,13 @@ namespace Dist
         size_t n_valid = 0;
 
         for (size_t i = 0; i < vec1.size(); ++i)
-        {
-            if ((std::isnan(vec1[i]) || std::isnan(vec2[i])) && na_rm)
+        {   
+            bool element_has_na = std::isnan(vec1[i]) || std::isnan(vec2[i]);
+
+            if (element_has_na && na_rm)
                 continue;
 
-            if ((std::isnan(vec1[i]) || std::isnan(vec2[i])) && !na_rm)
+            if (element_has_na && !na_rm)
                 return std::numeric_limits<double>::quiet_NaN();
 
             double diff = vec[i] - scalar;
