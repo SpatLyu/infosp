@@ -197,7 +197,7 @@ namespace Dist
             if (element_has_na && !na_rm)
                 return std::numeric_limits<double>::quiet_NaN();
 
-            double diff = vec[i] - scalar;
+            double diff = vec1[i] - vec2[i];
             double ad   = std::abs(diff);
 
             if (method == "euclidean")
