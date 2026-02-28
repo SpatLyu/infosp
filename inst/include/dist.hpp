@@ -263,6 +263,62 @@ namespace Dist
         return distm;
     }
 
+        /***********************************************************
+        * Matrix - Subset Distance
+        * Compute distances from pred rows to lib rows
+        *
+        * Each element (i, j) equals
+        *      dist(mat[pred[i]], mat[lib[j]])
+        ***********************************************************/
+        inline std::vector<std::vector<double>> dist(
+            const std::vector<std::vector<double>>& mat,
+            const std::vector<size_t>& lib,
+            const std::vector<size_t>& pred,
+            std::string method = "euclidean",
+            bool na_rm = true)
+        {
+            if (mat.empty())
+                return {};
+
+            const size_t n_rows = mat.size();
+
+            // // Validate indices
+            // for (size_t idx : lib)
+            // {
+            //     if (idx >= n_rows)
+            //         throw std::out_of_range("lib index out of range.");
+            // }
+
+            // for (size_t idx : pred)
+            // {
+            //     if (idx >= n_rows)
+            //         throw std::out_of_range("pred index out of range.");
+            // }
+
+            std::vector<std::vector<double>> distm(
+                n_rows,
+                std::vector<double>(n_rows,
+                    std::numeric_limits<double>::quiet_NaN()));
+
+            for (size_t i = 0; i < pred.size(); ++i)
+            {
+                const size_t pi = pred[i];
+
+                for (size_t j = 0; j < lib.size(); ++j)
+                {
+                    const size_t lj = lib[j];
+
+                    distm[pi][lj] = dist(
+                        mat[pi],
+                        mat[lj],
+                        method,
+                        na_rm);
+                }
+            }
+
+            return distm;
+        }
+
 } // namespace Dist
 
 #endif // DIST_HPP
