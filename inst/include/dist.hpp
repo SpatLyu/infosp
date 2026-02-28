@@ -67,7 +67,7 @@ namespace Dist
         {
             if (!std::isnan(vec[i]))
             {
-                result[i] = std::abs(vec[i] - scalar);
+                result[i] = std::abs(scalar - vec[i]);
             }
         }
 
