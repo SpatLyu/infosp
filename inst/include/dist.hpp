@@ -37,6 +37,66 @@
 
 namespace Dist
 {   
+    /*
+     * @enum DistanceMethod
+     * @brief Enumerated type for supported distance metrics in state space projection.
+     * 
+     * This enum provides a type-safe, efficient way to specify distance calculation
+     * methods without repeated string comparisons in performance-critical loops.
+     * 
+     * @var Euclidean
+     *   L2 norm: sqrt(sum((x_i - y_i)^2)). Sensitive to large single-dimension differences.
+     * 
+     * @var Manhattan
+     *   L1 norm: sum(|x_i - y_i|). More robust to outliers than Euclidean.
+     * 
+     * @var Maximum
+     *   L-infinity norm: max(|x_i - y_i|). Captures worst-case dimensional deviation.
+     * 
+     * @var Invalid
+     *   Sentinel value indicating an unrecognized or unsupported method string.
+     * 
+     * @note Stored as uint8_t for minimal memory footprint and optimal switch dispatch.
+     */
+    enum class DistanceMethod : uint8_t {
+        Euclidean,
+        Manhattan,
+        Maximum,
+        Invalid
+    };
+
+    /*
+     * @brief Parses a distance method name string into the corresponding DistanceMethod enum.
+     * 
+     * This helper function converts user-facing string identifiers (e.g., "euclidean")
+     * into the internal enum representation. It is designed to be called exactly once
+     * at the entry point of high-performance routines, eliminating repeated string
+     * comparisons in nested loops.
+     * 
+     * @param method The distance method name as a string. Accepted values:
+     *               - "euclidean" : L2 distance
+     *               - "manhattan" : L1 distance
+     *               - "maximum"   : Chebyshev / L-infinity distance
+     * 
+     * @return The corresponding DistanceMethod enum value. Returns DistanceMethod::Invalid
+     *         if the input string does not match any supported method.
+     * 
+     * @note Case-sensitive matching. Whitespace or alternative spellings will result in Invalid.
+     * @warning Caller must validate the return value != Invalid before proceeding with computation.
+     * 
+     * @example
+     *   auto method = parseDistanceMethod("manhattan");
+     *   if (method == DistanceMethod::Invalid) {
+     *       throw std::invalid_argument("Unknown distance metric");
+     *   }
+     */
+    inline DistanceMethod parseDistanceMethod(const std::string& method) {
+        if (method == "euclidean") return DistanceMethod::Euclidean;
+        if (method == "manhattan") return DistanceMethod::Manhattan;
+        if (method == "maximum")   return DistanceMethod::Maximum;
+        return DistanceMethod::Invalid;
+    }
+    
     /***********************************************************
      * Scalar - Scalar
      ***********************************************************/
