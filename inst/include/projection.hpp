@@ -53,7 +53,33 @@
 #include "numericutils.hpp"
 
 namespace Projection
-{
+{   
+    /***********************************************************
+     * Simplex Projection
+     *
+     * Parameters:
+     *      embedding     reconstructed state space
+     *      target        observed scalar response
+     *      lib           library row indices
+     *      pred          prediction row indices
+     *      num_neighbors number of nearest neighbors
+     *      method        distance metric
+     *
+     * Returns:
+     *      prediction vector aligned to target length
+     *
+     * Algorithm:
+     *      1. For each prediction index p
+     *      2. Compute distances between embedding[p]
+     *         and embedding[lib[i]]
+     *      3. Select k nearest neighbors
+     *      4. Compute exponential weights
+     *      5. Produce weighted average prediction
+     *
+     * Notes:
+     *      Self matching is excluded.
+     *      If no valid neighbor exists, prediction is NaN.
+     ***********************************************************/
     inline std::vector<double> Simplex(
         const std::vector<std::vector<double>>& embedding,
         const std::vector<double>& target,
