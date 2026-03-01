@@ -142,6 +142,6 @@ namespace Projection
         return pred;
     }
 
-}// namespace Projection
+} // namespace Projection
 
 #endif // PROJECTION_HPP
