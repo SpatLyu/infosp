@@ -140,7 +140,6 @@ namespace Projection
         }
 
         return pred;
-
     }
 
 }// namespace Projection
