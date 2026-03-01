@@ -314,7 +314,7 @@ namespace Dist
 
         for (size_t i = 0; i < n; ++i) {
             for (size_t j = i+1; j < n; ++j) { 
-            double distv = dist(mat[i], mat[j], method, na_rm);
+            double distv = Dist(mat[i], mat[j], method, na_rm);
             distm[i][j] = distv;  // Correctly assign distance to upper triangle
             distm[j][i] = distv;  // Mirror the value to the lower triangle
             // distm[i][j] = distm[j][i] = dist(mat[i], mat[j], method, na_rm);
