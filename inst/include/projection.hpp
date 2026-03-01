@@ -24,8 +24,8 @@ namespace Projection
         size_t N = target.size();
         std::vector<double> pred(N, std::numeric_limits<double>::quiet_NaN());
 
-        if (num_neighbors <= 0) {
-            return pred;  // no neighbors to use, return all NaNs
+        if (num_neighbors == 0 || num_neighbors >= N) {
+            return pred;  // no valid neighbors to use, return all NaNs
         }
 
         for (size_t pi = 0; pi < pred_indices.size(); ++pi) {
