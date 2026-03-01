@@ -89,7 +89,7 @@ namespace Projection
             }
 
             // Adjust number of neighbors to available valid libs
-            size_t k = std::min(num_neighbors, distances.size());
+            const size_t k = std::min(num_neighbors, distances.size());
 
             // Prepare indices for sorting
             std::vector<size_t> neighbors(distances.size());
@@ -97,33 +97,34 @@ namespace Projection
 
             // Partial sort to find k nearest neighbors by distance
             std::partial_sort(
-            neighbors.begin(), neighbors.begin() + k, neighbors.end(),
-            [&](size_t a, size_t b) {
-                if (!doubleNearlyEqual(distances[a], distances[b])) {
-                return distances[a] < distances[b];
-                } else {
-                return a < b;
+                neighbors.begin(), neighbors.begin() + k, neighbors.end(),
+                [&](size_t a, size_t b) {
+                    if (!NumericUtils::doubleNearlyEqual(distances[a], distances[b])) {
+                        return distances[a] < distances[b];
+                    } else {
+                        return a < b;
+                    }
                 }
-            });
+            );
 
             double min_distance = distances[neighbors[0]];
 
             // Compute weights for neighbors
             std::vector<double> weights(k);
-            if (doubleNearlyEqual(min_distance,0.0)) { // Perfect match found
-            std::fill(weights.begin(), weights.end(), 0.000001);
-            for (size_t i = 0; i < k; ++i) {
-                if (doubleNearlyEqual(distances[neighbors[i]],0.0)) {
-                weights[i] = 1.0;
+            if (NumericUtils::doubleNearlyEqual(min_distance,0.0)) { // Perfect match found
+                std::fill(weights.begin(), weights.end(), 0.000001);
+                for (size_t i = 0; i < k; ++i) {
+                    if (NumericUtils::doubleNearlyEqual(distances[neighbors[i]],0.0)) {
+                        weights[i] = 1.0;
+                    }
                 }
-            }
             } else {
-            for (size_t i = 0; i < k; ++i) {
-                weights[i] = std::exp(-distances[neighbors[i]] / min_distance);
-                if (weights[i] < 0.000001) {
-                weights[i] = 0.000001;
+                for (size_t i = 0; i < k; ++i) {
+                    weights[i] = std::exp(-distances[neighbors[i]] / min_distance);
+                    if (weights[i] < 0.000001) {
+                        weights[i] = 0.000001;
+                    }
                 }
-            }
             }
 
             double total_weight = std::accumulate(weights.begin(), weights.end(), 0.0);
@@ -132,7 +133,7 @@ namespace Projection
             // (No NaNs here, as NaN values in the corresponding components of lib and pred are excluded in advance.)
             double prediction = 0.0;
             for (size_t i = 0; i < k; ++i) {
-            prediction += weights[i] * target[valid_libs[neighbors[i]]];
+                prediction += weights[i] * target[valid_libs[neighbors[i]]];
             }
 
             pred[p] = prediction / total_weight;
