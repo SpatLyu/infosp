@@ -44,29 +44,29 @@ namespace Projection
             valid_libs.reserve(lib.size());
 
             for (size_t i : lib) {
-            if (i == p) continue; // Skip self-matching
+                if (i == p) continue; // Skip self-matching
 
-            double sum_sq = 0.0;
-            size_t count = 0;
-            for (size_t j = 0; j < embedding[p].size(); ++j) {
-                if (!std::isnan(embedding[i][j]) && !std::isnan(embedding[p][j])) {
-                double diff = embedding[i][j] - embedding[p][j];
-                if (dist_metric == 1) {
-                    sum_sq += std::abs(diff); // L1
-                } else {
-                    sum_sq += diff * diff;    // L2
+                double sum_sq = 0.0;
+                size_t count = 0;
+                for (size_t j = 0; j < embedding[p].size(); ++j) {
+                    if (!std::isnan(embedding[i][j]) && !std::isnan(embedding[p][j])) {
+                        double diff = embedding[i][j] - embedding[p][j];
+                        if (dist_metric == 1) {
+                            sum_sq += std::abs(diff); // L1
+                        } else {
+                            sum_sq += diff * diff;    // L2
+                        }
+                        ++count;
+                    }
                 }
-                ++count;
+                if (count > 0) {
+                    if (dist_metric == 1) {  // L1
+                        distances.push_back(sum_sq / (dist_average ? static_cast<double>(count) : 1.0));
+                    } else {                 // L2
+                        distances.push_back(std::sqrt(sum_sq / (dist_average ? static_cast<double>(count) : 1.0)));
+                    }
+                        valid_libs.push_back(i);
                 }
-            }
-            if (count > 0) {
-                if (dist_metric == 1) {  // L1
-                distances.push_back(sum_sq / (dist_average ? static_cast<double>(count) : 1.0));
-                } else {                 // L2
-                distances.push_back(std::sqrt(sum_sq / (dist_average ? static_cast<double>(count) : 1.0)));
-                }
-                valid_libs.push_back(i);
-            }
             }
 
             // If no valid distances found, prediction is NaN
