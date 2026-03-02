@@ -249,7 +249,7 @@ namespace Dist
         std::string method = "euclidean",
         bool na_rm = true)
     {   
-        if (vec1.empty() || vec1.empty() || vec1.size() != vec2.size())
+        if (vec1.empty() || vec2.empty() || vec1.size() != vec2.size())
             return std::numeric_limits<double>::quiet_NaN();
 
         const DistanceMethod dist_method = parseDistanceMethod(method);
