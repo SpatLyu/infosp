@@ -5,6 +5,7 @@
 #include <numeric>
 #include <algorithm>
 #include "dist.hpp"
+#include <Rcpp.h>
 
 // Wrapper function to compute row-wise distance matrix for an input matrix
 // [[Rcpp::export(rng = false)]]
