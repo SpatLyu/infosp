@@ -12,7 +12,7 @@
 double RcppDist4Vec(
     const Rcpp::NumericVector& v1,
     const Rcpp::NumericVector& v2,
-    const std::string& method = "euclidean",
+    std::string method = "euclidean",
     bool na_rm = true
 ) {
     // Convert Rcpp::NumericVector to std::vector<double>
@@ -29,7 +29,7 @@ double RcppDist4Vec(
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector RcppDist4Mat(
     const Rcpp::NumericMatrix& mat,
-    const std::string& method = "euclidean",
+    std::string method = "euclidean",
     bool na_rm = true
 ) {
     // Convert Rcpp::NumericMatrix to std::vector<std::vector<double>>
@@ -39,7 +39,7 @@ Rcpp::NumericVector RcppDist4Mat(
 
     for (int r = 0; r < numRows; ++r) {
         for (int c = 0; c < numCols; ++c) {
-        cppMat[r][c] = mat(r, c);
+            cppMat[r][c] = mat(r, c);
         }
     }
 
@@ -52,7 +52,7 @@ Rcpp::NumericVector RcppDist4Mat(
     Rcpp::NumericMatrix result(rows, cols);
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-        result(i, j) = distm[i][j];
+            result(i, j) = distm[i][j];
         }
     }
 
@@ -65,7 +65,7 @@ Rcpp::NumericVector RcppDist4MatSub(
     const Rcpp::NumericMatrix& mat,
     const Rcpp::IntegerVector& lib,
     const Rcpp::IntegerVector& pred,
-    const std::string& method = "euclidean",
+    std::string method = "euclidean",
     bool na_rm = true
 ) {
     // Convert Rcpp::NumericMatrix to std::vector<std::vector<double>>
@@ -75,7 +75,7 @@ Rcpp::NumericVector RcppDist4MatSub(
 
     for (int r = 0; r < numRows; ++r) {
         for (int c = 0; c < numCols; ++c) {
-        cppMat[r][c] = mat(r, c);
+            cppMat[r][c] = mat(r, c);
         }
     }
 
@@ -108,7 +108,7 @@ Rcpp::NumericVector RcppDist4MatSub(
     Rcpp::NumericMatrix result(rows, cols);
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-        result(i, j) = distm[i][j];
+            result(i, j) = distm[i][j];
         }
     }
 

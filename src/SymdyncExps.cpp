@@ -45,7 +45,7 @@ Rcpp::NumericMatrix RcppGenSignatureSpace(
 // Wrapper function to convert a continuous signature matrix into symbolic pattern vector
 // [[Rcpp::export(rng = false)]]
 Rcpp::CharacterVector RcppGenPatternSpace(
-    Rcpp::NumericMatrix mat,
+    const Rcpp::NumericMatrix& mat,
     bool na_rm = true
 )
 {
@@ -68,8 +68,8 @@ Rcpp::CharacterVector RcppGenPatternSpace(
 // Wrapper function to compute sign agreement proportions between two pattern vectors
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector RcppCountSignProp(
-    Rcpp::CharacterVector pat1,
-    Rcpp::CharacterVector pat2
+    const Rcpp::CharacterVector& pat1,
+    const Rcpp::CharacterVector& pat2
 )
 {
     auto p1 = vec2pat(pat1);

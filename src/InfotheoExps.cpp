@@ -49,7 +49,7 @@ double RcppEntropy(SEXP series,
 // Wrapper function to calculate joint entropy
 // [[Rcpp::export(rng = false)]]
 double RcppJE(SEXP mat,
-              Rcpp::IntegerVector vars,
+              const Rcpp::IntegerVector& vars,
               double base = 2.0,
               bool na_rm = true)
 {
@@ -72,8 +72,8 @@ double RcppJE(SEXP mat,
 // Wrapper function to calculate conditional entropy
 // [[Rcpp::export(rng = false)]]
 double RcppCE(SEXP mat,
-              Rcpp::IntegerVector target,
-              Rcpp::IntegerVector conds,
+              const Rcpp::IntegerVector& target,
+              const Rcpp::IntegerVector& conds,
               double base = 2.0,
               bool na_rm = true)
 {
@@ -106,8 +106,8 @@ double RcppCE(SEXP mat,
 // Wrapper function to calculate mutual information
 // [[Rcpp::export(rng = false)]]
 double RcppMI(SEXP mat,
-              Rcpp::IntegerVector target,
-              Rcpp::IntegerVector interact,
+              const Rcpp::IntegerVector& target,
+              const Rcpp::IntegerVector& interact,
               double base = 2.0,
               bool na_rm = true)
 {
@@ -140,9 +140,9 @@ double RcppMI(SEXP mat,
 // Wrapper function to calculate conditional mutual information
 // [[Rcpp::export(rng = false)]]
 double RcppCMI(SEXP mat,
-               Rcpp::IntegerVector target,
-               Rcpp::IntegerVector interact,
-               Rcpp::IntegerVector conds,
+               const Rcpp::IntegerVector& target,
+               const Rcpp::IntegerVector& interact,
+               const Rcpp::IntegerVector& conds,
                double base = 2.0,
                bool na_rm = true)
 {
