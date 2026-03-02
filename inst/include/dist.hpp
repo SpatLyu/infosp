@@ -493,7 +493,7 @@ namespace Dist
                 else
                     distv = maxv;  // maximum
 
-                distm[pi][lj] = distv
+                distm[pi][lj] = distv;
             }
         }
 
