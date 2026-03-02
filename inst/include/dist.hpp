@@ -446,8 +446,6 @@ namespace Dist
                 //     method,
                 //     na_rm);
 
-                double distv;
-
                 double sum = 0.0;
                 double maxv = 0.0;
                 size_t n_valid = 0;
@@ -482,11 +480,9 @@ namespace Dist
                     ++n_valid;
                 }
 
-                if (n_valid == 0)
-                {
-                    distv = std::numeric_limits<double>::quiet_NaN();
-                }
-
+                if (n_valid == 0) continue;
+                
+                double distv;
                 if (dist_method == DistanceMethod::Euclidean)
                     distv = std::sqrt(sum);
                 else if (dist_method == DistanceMethod::Manhattan)
