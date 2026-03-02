@@ -248,6 +248,11 @@ namespace Dist
         if (vec1.empty() || vec1.empty() || vec1.size() != vec2.size())
             return std::numeric_limits<double>::quiet_NaN();
 
+        const DistanceMethod dist_method = parseDistanceMethod(method);
+        if (dist_method == DistanceMethod::Invalid) {
+            throw std::invalid_argument("Unsupported distance method: " + method);
+        }
+
         double sum = 0.0;
         double maxv = 0.0;
         size_t n_valid = 0;
@@ -264,22 +269,21 @@ namespace Dist
 
             double diff = vec1[i] - vec2[i];
 
-            if (method == "euclidean")
-            {
-                sum += diff * diff;
-            }
-            else if (method == "manhattan")
-            {
-                sum += std::abs(diff);
-            }
-            else if (method == "maximum")
-            {   
-                double ad = std::abs(diff);
-                if (ad > maxv) maxv = ad;
-            }
-            else
-            {
-                throw std::invalid_argument("Unsupported distance method.");
+            switch (dist_method) {
+                case DistanceMethod::Euclidean:
+                    sum += diff * diff;
+                    break;
+                case DistanceMethod::Manhattan:
+                    sum += std::abs(diff);
+                    break;
+                case DistanceMethod::Maximum:
+                    {
+                        double ad = std::abs(diff);
+                        if (ad > maxv) maxv = ad;
+                    }
+                    break;
+                default:
+                    break; 
             }
 
             ++n_valid;
@@ -288,9 +292,9 @@ namespace Dist
         if (n_valid == 0)
             return std::numeric_limits<double>::quiet_NaN();
 
-        if (method == "euclidean")
+        if (dist_method == DistanceMethod::Euclidean)
             return std::sqrt(sum);
-        else if (method == "manhattan")
+        else if (dist_method == DistanceMethod::Manhattan)
             return sum;
         else
             return maxv;  // maximum
