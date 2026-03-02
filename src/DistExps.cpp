@@ -45,6 +45,8 @@ Rcpp::NumericVector RcppDist4Mat(
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericVector RcppDist4MatSub(
     const Rcpp::NumericMatrix& mat,
+    const Rcpp::IntegerVector& lib,
+    const Rcpp::IntegerVector& pred,
     const std::string& method = "euclidean",
     bool na_rm = true
 ) {
