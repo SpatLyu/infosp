@@ -60,7 +60,7 @@ namespace Projection
      *
      * Parameters:
      *      embedding     reconstructed state space
-     *      target        observed scalar response
+     *      target        observed response vector
      *      lib           library row indices
      *      pred          prediction row indices
      *      num_neighbors number of nearest neighbors
