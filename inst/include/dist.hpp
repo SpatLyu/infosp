@@ -330,7 +330,7 @@ namespace Dist
 
         for (size_t i = 0; i < n; ++i) {
             distm[i][i] = 0.0;
-            
+
             for (size_t j = i+1; j < n; ++j) 
             { 
                 // double distv = Dist(mat[i], mat[j], method, na_rm);
@@ -440,6 +440,12 @@ namespace Dist
             for (size_t j = 0; j < lib.size(); ++j)
             {
                 const size_t lj = lib[j];
+
+                if (pi == lj) 
+                {
+                    distm[pi][lj] = 0.0;
+                    continue;
+                }
 
                 // distm[pi][lj] = Dist(
                 //     mat[pi],
