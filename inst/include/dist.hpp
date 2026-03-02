@@ -314,7 +314,7 @@ namespace Dist
         bool na_rm = true)
     {   
         if (mat.empty()) return {};
-        
+
         const DistanceMethod dist_method = parseDistanceMethod(method);
         if (dist_method == DistanceMethod::Invalid) {
             throw std::invalid_argument("Unsupported distance method: " + method);
@@ -435,11 +435,65 @@ namespace Dist
             {
                 const size_t lj = lib[j];
 
-                distm[pi][lj] = Dist(
-                    mat[pi],
-                    mat[lj],
-                    method,
-                    na_rm);
+                // distm[pi][lj] = Dist(
+                //     mat[pi],
+                //     mat[lj],
+                //     method,
+                //     na_rm);
+
+                double distv;
+
+                double sum = 0.0;
+                double maxv = 0.0;
+                size_t n_valid = 0;
+
+                for (size_t ei = 0; ei < mat[pi].size(); ++ei)
+                {   
+                    bool element_has_na = std::isnan(mat[pi][ei]) || std::isnan(mat[lj][ei]);
+
+                    if (element_has_na && na_rm) continue;
+
+                    if (element_has_na && !na_rm) 
+                    {
+                        distv = std::numeric_limits<double>::quiet_NaN();
+                        break;
+                    }
+
+                    double diff = mat[pi][ei] - mat[lj][ei];
+
+                    switch (dist_method) {
+                        case DistanceMethod::Euclidean:
+                            sum += diff * diff;
+                            break;
+                        case DistanceMethod::Manhattan:
+                            sum += std::abs(diff);
+                            break;
+                        case DistanceMethod::Maximum:
+                            {
+                                double ad = std::abs(diff);
+                                if (ad > maxv) maxv = ad;
+                            }
+                            break;
+                        default:
+                            break; 
+                    }
+
+                    ++n_valid;
+                }
+
+                if (n_valid == 0)
+                {
+                    distv = std::numeric_limits<double>::quiet_NaN();
+                }
+
+                if (dist_method == DistanceMethod::Euclidean)
+                    distv = std::sqrt(sum);
+                else if (dist_method == DistanceMethod::Manhattan)
+                    distv = sum;
+                else
+                    distv = maxv;  // maximum
+
+                distm[pi][lj] = distv
             }
         }
 
