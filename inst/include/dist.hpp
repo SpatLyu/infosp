@@ -407,6 +407,11 @@ namespace Dist
     {
         if (mat.empty()) return {};
 
+        const DistanceMethod dist_method = parseDistanceMethod(method);
+        if (dist_method == DistanceMethod::Invalid) {
+            throw std::invalid_argument("Unsupported distance method: " + method);
+        }
+
         const size_t n_rows = mat.size();
 
         // // Validate indices
