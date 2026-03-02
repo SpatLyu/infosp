@@ -143,6 +143,7 @@ namespace Projection
                         // else {
                         //     throw std::invalid_argument("Unsupported distance method.");
                         // }
+                        
                         switch (dist_method) {
                             case DistanceMethod::Euclidean:
                                 sum_s += diff * diff;
@@ -165,12 +166,19 @@ namespace Projection
                 }
 
                 if (n_valid > 0) {
-                    if (method == "euclidean")
+                    // if (method == "euclidean")
+                    //     distances.push_back(std::sqrt(sum_s));
+                    // else if (method == "manhattan")
+                    //     distances.push_back(sum_s);
+                    // else
+                    //     distances.push_back(maxv);
+
+                    if (dist_method == DistanceMethod::Euclidean)
                         distances.push_back(std::sqrt(sum_s));
-                    else if (method == "manhattan")
+                    else if (dist_method == DistanceMethod::Manhattan)
                         distances.push_back(sum_s);
                     else
-                        distances.push_back(maxv);
+                        distances.push_back(maxv);  // maximum
                     
                     valid_libs.push_back(i);    
                 }
