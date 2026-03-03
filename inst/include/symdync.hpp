@@ -545,7 +545,7 @@ struct PairHash {
  *
  * ---------------------------------------------------------------------------
  */
-inline PatternCausalityResult ComputePatternCausality(
+inline PatternCausalityRes ComputePatternCausality(
     const std::vector<std::vector<double>>& SMx,
     const std::vector<std::vector<double>>& SMy,
     const std::vector<std::vector<double>>& pred_SMy,
