@@ -179,6 +179,7 @@
 #include <stdexcept>
 #include <cstdint>
 #include <iterator>
+#include <functional> 
 #include <unordered_map>
 #include <unordered_set>
 #include "numericutils.hpp"
