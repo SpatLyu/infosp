@@ -68,12 +68,10 @@
  *      std::vector<std::vector<double>>
  *      Dimension: [n_rows x n_cols]
  *
- *
  *  Pattern Representation:
  *
  *      std::vector<std::vector<uint8_t>>
  *      Dimension: [n_rows x pattern_length]
- *
  *
  *  Symbol Encoding:
  *
@@ -92,7 +90,6 @@
  *
  *          Any row containing NaN is replaced by a single element
  *          pattern {0}, marking the observation as invalid.
- *
  *
  *      na_rm = false
  *
@@ -115,7 +112,6 @@
  *
  *  Symbol 2 only matches positively with 2.
  *
- *
  *  Output of CountSignProp:
  *
  *      std::vector<double> of size 2:
@@ -133,25 +129,21 @@
  *     Uses uint8 storage instead of string encoding to minimize
  *     memory footprint and allocator overhead.
  *
- *
  *  2. Cache friendliness
  *
  *     Patterns are stored in contiguous memory layouts to
  *     maximize throughput in numerical pipelines.
- *
  *
  *  3. Deterministic indexing
  *
  *     Pattern space is lexicographically sorted and symmetrically
  *     completed to guarantee stable and reproducible indexing.
  *
- *
  *  4. Performance scalability
  *
  *     Suitable for millions of observations and seamless
  *     integration with high performance hashing or bit packing
  *     pipelines.
- *
  *
  *  5. Interoperability
  *
