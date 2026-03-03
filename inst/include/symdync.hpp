@@ -485,7 +485,7 @@ inline std::vector<double> CountSignProp(
  *
  ***************************************************************/
 
-struct PatternCausalityResult
+struct PatternCausalityRes
 {
     std::vector<double> NoCausality;
     std::vector<double> PositiveCausality;
@@ -552,7 +552,7 @@ inline PatternCausalityResult ComputePatternCausality(
     bool weighted = true
 )
 {
-    PatternCausalityResult res;
+    PatternCausalityRes res;
 
     const size_t n = PX.size();
     if (n == 0) return res;
