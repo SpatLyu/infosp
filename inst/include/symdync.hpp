@@ -3,103 +3,177 @@
  *  File: symdync.hpp
  *
  *  Symbolic Dynamics Utilities for High Performance
- *  Pattern Construction and Encoding.
+ *  Pattern Construction, Encoding and Causality Analysis
  *
- *  This header provides lightweight and efficient utilities
- *  for transforming continuous state space data into symbolic
- *  pattern representations suitable for large scale causal,
- *  information theoretic and dynamical systems analysis.
+ *  ----------------------------------------------------------------
+ *  Overview
+ *  ----------------------------------------------------------------
  *
- *  Core functionalities:
+ *  This header provides lightweight and computationally efficient
+ *  utilities for transforming continuous state space data into
+ *  symbolic representations suitable for large scale dynamical,
+ *  causal and information theoretic analysis.
  *
- *    1. GenSignatureSpace
- *       - Converts a continuous state space matrix into a
- *         signature space matrix by computing successive
- *         differences or relative changes.
+ *  The implementation is designed for high dimensional,
+ *  high frequency and large sample size scenarios where memory
+ *  efficiency and deterministic behavior are critical.
  *
- *    2. GenPatternSpace
- *       - Converts a continuous signature matrix into compact
- *         discrete pattern representations using uint8 encoding.
+ *  ----------------------------------------------------------------
+ *  Core Functionalities
+ *  ----------------------------------------------------------------
  *
- *    3. CountSignProp
- *       - Compares two pattern spaces and computes the
- *         proportion of sign agreement and disagreement.
+ *  1. GenSignatureSpace
  *
- *  Data conventions:
+ *     Converts a continuous state space matrix into a signature
+ *     space matrix by computing successive differences or relative
+ *     changes between adjacent time steps.
  *
- *    Signature matrix:
+ *
+ *  2. GenPatternSpace
+ *
+ *     Converts a continuous signature matrix into compact discrete
+ *     symbolic patterns using uint8 encoding.
+ *
+ *     Output is a pattern space represented as:
+ *
+ *         std::vector<std::vector<uint8_t>>
+ *
+ *
+ *  3. CountSignProp
+ *
+ *     Compares two symbolic pattern spaces and computes the
+ *     proportion of sign agreement and disagreement.
+ *
+ *
+ *  4. ComputePatternCausality
+ *
+ *     Constructs a complete symbolic pattern space, enforces
+ *     symmetric closure, builds a causal heatmap and classifies
+ *     each observation into:
+ *
+ *         0  No causality
+ *         1  Positive causality
+ *         2  Negative causality
+ *         3  Dark causality
+ *
+ *     Returns detailed per observation results and aggregated
+ *     metrics.
+ *
+ *  ----------------------------------------------------------------
+ *  Data Conventions
+ *  ----------------------------------------------------------------
+ *
+ *  Signature Matrix:
+ *
  *      std::vector<std::vector<double>>
  *      Dimension: [n_rows x n_cols]
  *
- *    Pattern representation:
+ *
+ *  Pattern Representation:
+ *
  *      std::vector<std::vector<uint8_t>>
  *      Dimension: [n_rows x pattern_length]
  *
- *    Symbol encoding:
- *      0  -> NA / undefined
+ *
+ *  Symbol Encoding:
+ *
+ *      0  -> NA or undefined
  *      1  -> Downward change
- *      2  -> No change / Stable
+ *      2  -> Stable or no change
  *      3  -> Upward change
  *
- *  NA handling:
+ *  ----------------------------------------------------------------
+ *  NA Handling
+ *  ----------------------------------------------------------------
  *
- *    Controlled by the parameter na_rm.
+ *  Controlled by the parameter `na_rm`.
  *
  *      na_rm = true
- *        Rows containing any NaN are replaced by a single-element
- *        pattern {0}, indicating invalid observation.
+ *
+ *          Any row containing NaN is replaced by a single element
+ *          pattern {0}, marking the observation as invalid.
+ *
  *
  *      na_rm = false
- *        NaN values are encoded explicitly as symbol 0 inside the
- *        pattern vector.
  *
- *  Sign comparison rule:
+ *          NaN values are encoded explicitly as symbol 0 inside
+ *          the pattern vector.
  *
- *      Valid comparison requires both symbols != 0.
+ *  ----------------------------------------------------------------
+ *  Sign Comparison Rules
+ *  ----------------------------------------------------------------
  *
- *      Positive agreement:
- *          (1,1), (2,2), (3,3)
+ *  Valid comparison requires both symbols to be non zero.
  *
- *      Negative agreement:
- *          (1,3), (3,1)
+ *  Positive agreement:
  *
- *      Symbol 2 only matches positively with 2.
+ *      (1,1), (2,2), (3,3)
+ *
+ *  Negative agreement:
+ *
+ *      (1,3), (3,1)
+ *
+ *  Symbol 2 only matches positively with 2.
+ *
  *
  *  Output of CountSignProp:
  *
- *      std::vector<double> size 2:
+ *      std::vector<double> of size 2:
+ *
  *          [ positive_ratio , negative_ratio ]
  *
- *      If no valid comparisons exist,
- *      both values are returned as NaN.
+ *      If no valid comparisons exist, both values are NaN.
  *
- *  Design principles:
+ *  ----------------------------------------------------------------
+ *  Design Principles
+ *  ----------------------------------------------------------------
  *
- *    - Memory efficiency
- *      Uses uint8 storage instead of string representations to
- *      minimize memory footprint and allocator overhead.
+ *  1. Memory efficiency
  *
- *    - Cache friendliness
- *      Patterns are stored in contiguous memory layouts for
- *      high throughput numerical processing.
+ *     Uses uint8 storage instead of string encoding to minimize
+ *     memory footprint and allocator overhead.
  *
- *    - Performance scalability
- *      Suitable for millions of observations and seamless
- *      integration with high performance hashing and bit packing
- *      pipelines.
  *
- *    - Interoperability
- *      Pattern encoding is directly compatible with downstream
- *      information theoretic estimators and symbolic causal models.
+ *  2. Cache friendliness
  *
- *  Intended usage:
+ *     Patterns are stored in contiguous memory layouts to
+ *     maximize throughput in numerical pipelines.
+ *
+ *
+ *  3. Deterministic indexing
+ *
+ *     Pattern space is lexicographically sorted and symmetrically
+ *     completed to guarantee stable and reproducible indexing.
+ *
+ *
+ *  4. Performance scalability
+ *
+ *     Suitable for millions of observations and seamless
+ *     integration with high performance hashing or bit packing
+ *     pipelines.
+ *
+ *
+ *  5. Interoperability
+ *
+ *     Pattern encoding is directly compatible with downstream
+ *     information theoretic estimators, entropy calculations
+ *     and symbolic causal inference frameworks.
+ *
+ *  ----------------------------------------------------------------
+ *  Intended Applications
+ *  ----------------------------------------------------------------
  *
  *    - Symbolic dynamics
  *    - Spatio temporal pattern mining
  *    - Information theoretic analysis
+ *    - Nonlinear system modeling
  *    - Causal pattern discovery
  *
- *  Author: Wenbo Lyu (Github: @SpatLyu)
+ *  ----------------------------------------------------------------
+ *  Author
+ *  ----------------------------------------------------------------
+ *
+ *  Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
  *
  ***************************************************************/
