@@ -37,11 +37,11 @@ std::vector<std::vector<size_t>> NN4DistMat(
 
   for (size_t i : pred) {
 
-    if (i >= n || distmat[i].size() != n) continue;
+    // if (i >= n || distmat[i].size() != n) continue;
 
     const auto& row = distmat[i];
 
-    if (std::isnan(row[i])) continue;
+    // if (std::isnan(row[i])) continue;
 
     std::vector<std::pair<double, size_t>> candidates;
     bool self_in_lib = (lib_set.find(i) != lib_set.end());
