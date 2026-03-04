@@ -1,5 +1,5 @@
 /***************************************************************
- *  dist.hpp
+ *  distance.hpp
  *
  *  High performance distance measurements
  *  for scalar, vector and matrix data.
