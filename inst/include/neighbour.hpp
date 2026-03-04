@@ -97,3 +97,71 @@ std::vector<std::vector<size_t>> NN4DistMat(
 
   return result;
 }
+
+std::vector<std::vector<size_t>> NN4DistMat(
+    const std::vector<std::vector<double>>& distmat,
+    size_t k,
+    bool include_self = false)
+{
+  const size_t n = distmat.size();
+
+  // Initialize result with empty vectors
+  std::vector<std::vector<size_t>> result(n);
+
+  for (size_t i = 0; i < n; ++i) {
+    const auto& row = distmat[i];
+
+    // if (std::isnan(row[i])) continue;
+
+    std::vector<std::pair<double, size_t>> candidates;
+
+    for (size_t j = 0; j < n; ++j) {
+
+      if (i == j) continue;
+
+      double d = row[j];
+      if (!std::isnan(d)) {
+        candidates.emplace_back(d, j);
+      }
+    }
+
+    std::vector<size_t> indices;
+    indices.reserve(k);
+    size_t effective_k = k;
+
+    // Handle self inclusion
+    if (include_self) {
+      indices.push_back(i);
+      if (effective_k > 0) {
+        effective_k -= 1;
+      }
+    }
+
+    size_t num_neighbors = std::min(effective_k, candidates.size());
+
+    if (num_neighbors > 0) {
+
+      std::partial_sort(
+        candidates.begin(),
+        candidates.begin() + num_neighbors,
+        candidates.end(),
+        [](const std::pair<double, size_t>& a,
+           const std::pair<double, size_t>& b) {
+          if (!doubleNearlyEqual(a.first, b.first)) {
+            return a.first < b.first;
+          } else {
+            return a.second < b.second;
+          }
+        }
+      );
+
+      for (size_t m = 0; m < num_neighbors; ++m) {
+        indices.push_back(candidates[m].second);
+      }
+    }
+
+    result[i] = std::move(indices);
+  }
+
+  return result;
+}
