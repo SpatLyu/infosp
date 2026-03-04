@@ -58,6 +58,7 @@ std::vector<std::vector<size_t>> NN4DistMat(
     }
 
     std::vector<size_t> indices;
+    indices.reserve(k);
     size_t effective_k = k;
 
     // Handle self inclusion
