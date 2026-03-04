@@ -1,5 +1,5 @@
 /***************************************************************
- *  projection.hpp
+ *  File: projection.hpp
  *
  *  High performance state space projection methods
  *  for nonlinear state prediction.

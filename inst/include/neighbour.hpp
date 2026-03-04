@@ -1,5 +1,5 @@
-/***************************************************************
- *  neighbour.hpp
+/********************************************************************
+ *  File: neighbour.hpp
  *
  *  High performance nearest neighbor search utilities
  *  for matrix based state space and distance matrix data.
@@ -46,7 +46,7 @@
  *
  *  Author: Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
- ***************************************************************/
+ ********************************************************************/
 
 #ifndef NEIGHBOUR_HPP
 #define NEIGHBOUR_HPP

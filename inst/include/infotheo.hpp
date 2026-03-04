@@ -1,5 +1,5 @@
-/***************************************************************
- *  infotheo.hpp
+/**********************************************************************
+ *  File: infotheo.hpp
  *
  *  High performance information theoretic measurements
  *  for discrete pattern data.
@@ -25,7 +25,7 @@
  *
  *  Author: Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
- ***************************************************************/
+ **********************************************************************/
 
 #ifndef INFOTHEO_HPP
 #define INFOTHEO_HPP

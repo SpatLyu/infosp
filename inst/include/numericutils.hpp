@@ -1,6 +1,7 @@
-/**
- * @file numericutils.hpp
- * @brief Utility functions for safe and consistent floating-point operations.
+/********************************************************************************
+ * File: numericutils.hpp
+ * 
+ * Utility functions for safe and consistent floating-point operations.
  *
  * Provides helper functions for:
  *   - Floating-point comparison with combined relative and absolute tolerance.
@@ -10,7 +11,7 @@
  *
  * Author: Wenbo Lyu (Github: @SpatLyu)
  * License: GPL-3
- */
+ ********************************************************************************/
 
 #ifndef NUMERICUTILS_HPP
 #define NUMERICUTILS_HPP
