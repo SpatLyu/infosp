@@ -183,8 +183,6 @@ std::vector<std::vector<size_t>> NN4Mat(
   std::vector<std::vector<size_t>> result(n);
 
   for (size_t i = 0; i < n; ++i) {
-    const auto& row = distmat[i];
-
     // if (std::isnan(row[i])) continue;
 
     std::vector<std::pair<double, size_t>> candidates;
@@ -304,6 +302,9 @@ std::vector<std::vector<size_t>> NN4Mat(
 
   // Initialize result with empty vectors
   std::vector<std::vector<size_t>> result(n);
+
+  // Build lib membership lookup
+  std::unordered_set<size_t> lib_set(lib.begin(), lib.end());
 
   for (size_t i = 0; i < n; ++i) {
     const auto& row = distmat[i];
