@@ -268,7 +268,7 @@ std::vector<std::vector<size_t>> NN4Mat(
         candidates.end(),
         [](const std::pair<double, size_t>& a,
            const std::pair<double, size_t>& b) {
-          if (!doubleNearlyEqual(a.first, b.first)) {
+          if (!NumericUtils::doubleNearlyEqual(a.first, b.first)) {
             return a.first < b.first;
           } else {
             return a.second < b.second;
