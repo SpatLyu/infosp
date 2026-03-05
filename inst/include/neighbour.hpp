@@ -481,11 +481,3 @@ namespace NN
 } // namespace NN
 
 #endif // NEIGHBOUR_HPP
-
-
-
-
-
-
-
-
