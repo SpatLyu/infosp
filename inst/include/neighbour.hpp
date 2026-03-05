@@ -339,6 +339,7 @@ namespace NN
         // if (std::isnan(row[i])) continue;
 
         std::vector<std::pair<double, size_t>> candidates;
+        candidates.reserve(n - 1);
 
         for (size_t j = 0; j < n; ++j) {
 
@@ -428,7 +429,7 @@ namespace NN
 
         std::vector<std::pair<double, size_t>> candidates;
         candidates.reserve(lib.size());
-        
+
         bool self_in_lib = (lib_set.find(i) != lib_set.end());
 
         // Collect valid neighbors from lib excluding self
