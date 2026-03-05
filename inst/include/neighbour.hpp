@@ -304,10 +304,10 @@ std::vector<std::vector<size_t>> NN4Mat(
   // Build lib membership lookup
   std::unordered_set<size_t> lib_set(lib.begin(), lib.end());
 
-  for (size_t i = 0; i < n; ++i) {
+  for (size_t i : pred) {
     std::vector<std::pair<double, size_t>> candidates;
 
-    for (size_t j = 0; j < n; ++j) 
+    for (size_t j : lib) 
     {
 
       if (i == j) continue;
