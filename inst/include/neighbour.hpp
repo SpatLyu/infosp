@@ -48,11 +48,14 @@
 
 #include <vector>
 #include <cmath>
-#include <algorithm>
 #include <limits>
+#include <string>
 #include <numeric>
-#include <unordered_set>
+#include <cstdint>
+#include <utility>
+#include <algorithm>
 #include <stdexcept>
+#include <unordered_set>
 #include "numericutils.hpp"
 #include "distance.hpp"
 
