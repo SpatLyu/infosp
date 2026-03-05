@@ -26,7 +26,7 @@ std::vector<std::vector<size_t>> NN4DistMat(
     const std::vector<size_t>& lib,
     size_t k,
     bool include_self = false)
-{
+{ 
   const size_t n = distmat.size();
 
   // Initialize result with empty vectors
@@ -34,6 +34,10 @@ std::vector<std::vector<size_t>> NN4DistMat(
 
   // Build lib membership lookup
   std::unordered_set<size_t> lib_set(lib.begin(), lib.end());
+
+  // if (k > lib.size()) {
+  //   throw std::invalid_argument("Invalid argument: k exceeds library set capacity " + std::to_string(lib.size()));
+  // }
 
   for (size_t i : pred) {
 
