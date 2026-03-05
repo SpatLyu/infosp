@@ -93,6 +93,7 @@ namespace NN
 
       for (size_t i = 0; i < n; ++i) {
         std::vector<std::pair<double, size_t>> candidates;
+        candidates.reserve(n);
 
         for (size_t j = 0; j < n; ++j) 
         {
