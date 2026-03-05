@@ -187,13 +187,16 @@ double RcppCMI(SEXP mat,
 Rcpp::List RcppSURD(SEXP mat,
                     double base = 2.0,
                     bool na_rm = true,
-                    bool normalize = false,
-                    int threads = 1)
+                    bool normalize = true,
+                    int threads = 1,
+                    int max_order = 3)
 {
     InfoTheo::Matrix m = mat2patmat(mat);
 
     SURD::SURDRes res =
-        SURD::SURD(m, base, na_rm, normalize, static_cast<size_t>(std::abs(threads)));
+        SURD::SURD(m, base, na_rm, normalize, 
+                   static_cast<size_t>(std::abs(threads)),
+                   static_cast<size_t>(std::abs(max_order)));
 
     const size_t k = res.size();
 

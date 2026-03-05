@@ -214,8 +214,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppSURD
-Rcpp::List RcppSURD(SEXP mat, double base, bool na_rm, bool normalize, int threads);
-RcppExport SEXP _infosp_RcppSURD(SEXP matSEXP, SEXP baseSEXP, SEXP na_rmSEXP, SEXP normalizeSEXP, SEXP threadsSEXP) {
+Rcpp::List RcppSURD(SEXP mat, double base, bool na_rm, bool normalize, int threads, int max_order);
+RcppExport SEXP _infosp_RcppSURD(SEXP matSEXP, SEXP baseSEXP, SEXP na_rmSEXP, SEXP normalizeSEXP, SEXP threadsSEXP, SEXP max_orderSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type mat(matSEXP);
@@ -223,7 +223,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
     Rcpp::traits::input_parameter< bool >::type normalize(normalizeSEXP);
     Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
-    rcpp_result_gen = Rcpp::wrap(RcppSURD(mat, base, na_rm, normalize, threads));
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppSURD(mat, base, na_rm, normalize, threads, max_order));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -332,7 +333,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppCE", (DL_FUNC) &_infosp_RcppCE, 5},
     {"_infosp_RcppMI", (DL_FUNC) &_infosp_RcppMI, 5},
     {"_infosp_RcppCMI", (DL_FUNC) &_infosp_RcppCMI, 6},
-    {"_infosp_RcppSURD", (DL_FUNC) &_infosp_RcppSURD, 5},
+    {"_infosp_RcppSURD", (DL_FUNC) &_infosp_RcppSURD, 6},
     {"_infosp_RcppNN4Mat", (DL_FUNC) &_infosp_RcppNN4Mat, 4},
     {"_infosp_RcppNN4MatSub", (DL_FUNC) &_infosp_RcppNN4MatSub, 6},
     {"_infosp_RcppNN4DistMat", (DL_FUNC) &_infosp_RcppNN4DistMat, 3},

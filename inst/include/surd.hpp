@@ -42,6 +42,7 @@
 #include <limits>
 #include <stdexcept>
 #include "infotheo.hpp"
+#include "numericutils.hpp"
 
 namespace SURD
 {
@@ -209,7 +210,8 @@ namespace SURD
         double base = 2.0,
         bool na_rm = true,
         bool normalize = false,
-        size_t threads = 1)
+        size_t threads = 1,
+        size_t max_order = std::numeric_limits<size_t>::max())
     {   
         if (threads == 0) threads = 1;
         size_t hw = std::thread::hardware_concurrency();
@@ -220,8 +222,9 @@ namespace SURD
         if (mat.size() < 2)
             return result;
 
+        const size_t n_vars = mat.size();
         const size_t n_sources = mat.size() - 1;
-        const size_t n_vars = n_sources + 1;
+        max_order = std::min(max_order, n_sources);
 
         if (n_vars >= 63)
             throw std::invalid_argument("SURD supports <63 variables");
@@ -246,14 +249,31 @@ namespace SURD
             uint8_t order;
         };
 
+        size_t approx = 0;
+        if (n_sources > 30) {
+            approx = total_masks / 2;
+        } else {
+            for (size_t k = 1; k <= max_order; ++k)
+            {
+                size_t c = 1;
+                for (size_t i = 0; i < k; ++i)
+                    c = c * (n_sources - i) / (i + 1);
+                approx += c;
+            }
+        }
+        
         std::vector<Entry> entries;
-        entries.reserve((1ULL << n_sources) - 1);
+        entries.reserve(approx);
 
         const uint64_t start_mask = 2ULL;
 
         for (uint64_t mask = start_mask; mask < total_masks; ++mask)
         {
             if (mask & 1ULL)
+                continue;
+
+            uint8_t order = popcount[mask];
+            if (static_cast<size_t>(order) > max_order)
                 continue;
 
             double mi = compute_mi(H, mask);
@@ -263,7 +283,7 @@ namespace SURD
                 entries.push_back({
                     std::max(0.0, mi),
                     mask,
-                    popcount[mask]
+                    order
                 });
             }
         }
@@ -274,7 +294,7 @@ namespace SURD
         /***********************************************************
         * Group by order
         ***********************************************************/
-        std::vector<std::vector<Entry*>> groups(n_sources + 1);
+        std::vector<std::vector<Entry*>> groups(max_order + 1);
 
         for (auto& e : entries)
             groups[e.order].push_back(&e);
@@ -282,7 +302,15 @@ namespace SURD
         for (auto& g : groups)
             std::sort(g.begin(), g.end(),
                     [](Entry* a, Entry* b)
-                    { return a->mi < b->mi; });
+                    {   
+                        // return a->mi < b->mi;
+
+                        if (!NumericUtils::doubleNearlyEqual(a->mi, b->mi))
+                            return a->mi < b->mi;
+
+                        // tie-breaker: deterministic
+                        return a->mask < b->mask;
+                    });
 
         const double eps = 1e-12;
 
@@ -326,7 +354,7 @@ namespace SURD
         /***********************************************************
         * Higher order synergy
         ***********************************************************/
-        for (size_t m = 2; m <= n_sources; ++m)
+        for (size_t m = 2; m <= max_order; ++m)
         {
             if (groups[m].empty())
                 continue;
