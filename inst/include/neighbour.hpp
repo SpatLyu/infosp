@@ -25,7 +25,7 @@
  *                    mat[row][dimension]
  *
  *      distmat     : std::vector<std::vector<double>>
- *                    symmetric distance matrix
+ *                    distance matrix
  *
  *      lib         : library row indices
  *
