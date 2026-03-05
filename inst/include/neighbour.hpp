@@ -339,7 +339,7 @@ namespace NN
         // if (std::isnan(row[i])) continue;
 
         std::vector<std::pair<double, size_t>> candidates;
-        candidates.reserve(n - 1);
+        candidates.reserve(n);
 
         for (size_t j = 0; j < n; ++j) {
 
