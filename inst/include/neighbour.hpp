@@ -307,6 +307,7 @@ std::vector<std::vector<size_t>> NN4Mat(
 
   for (size_t i : pred) {
     std::vector<std::pair<double, size_t>> candidates;
+    bool self_in_lib = (lib_set.find(i) != lib_set.end());
 
     for (size_t j : lib) 
     {
@@ -363,7 +364,7 @@ std::vector<std::vector<size_t>> NN4Mat(
     size_t effective_k = k;
 
     // Handle self inclusion
-    if (include_self) {
+    if (include_self && self_in_lib) {
       indices.push_back(i);
       if (effective_k > 0) {
         effective_k -= 1;
