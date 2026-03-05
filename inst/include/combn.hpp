@@ -32,6 +32,9 @@ namespace Combn
      * Uses recursive backtracking to enumerate all size-m subsets
      * while preserving the original element order.
      *
+     * @note: If m > vec.size() or m == 0, an empty vector is returned.
+     *        This follows standard combinatorial mathematics (C(n, m) = 0).
+     *
      * @tparam T Element type
      * @param vec Input vector
      * @param m Number of elements per combination

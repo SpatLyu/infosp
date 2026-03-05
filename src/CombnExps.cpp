@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <cmath>
 #include "combn.hpp"
 #include <Rcpp.h>
 
@@ -20,19 +21,19 @@ Rcpp::List RcppCombn(SEXP vec, int m) {
         case INTSXP: {
             Rcpp::IntegerVector vec_int(vec);
             std::vector<int> cpp_vec(vec_int.begin(), vec_int.end());
-            auto result = Combn::Combn(cpp_vec, static_cast<size_t>(m));
+            auto result = Combn::Combn(cpp_vec, static_cast<size_t>(std::abs(m)));
             return convert2RList(result);
         }
         case REALSXP: {
             Rcpp::NumericVector vec_num(vec);
             std::vector<double> cpp_vec(vec_num.begin(), vec_num.end());
-            auto result = Combn::Combn(cpp_vec, static_cast<size_t>(m));
+            auto result = Combn::Combn(cpp_vec, static_cast<size_t>(std::abs(m)));
             return convert2RList(result);
         }
         case STRSXP: {
             Rcpp::CharacterVector vec_char(vec);
             std::vector<std::string> cpp_vec = Rcpp::as<std::vector<std::string>>(vec_char);
-            auto result = Combn::Combn(cpp_vec, static_cast<size_t>(m));
+            auto result = Combn::Combn(cpp_vec, static_cast<size_t>(std::abs(m)));
             return convert2RList(result);
         }
         default:
