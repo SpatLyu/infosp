@@ -322,14 +322,7 @@ std::vector<std::vector<size_t>> NN4Mat(
       for (size_t ei = 0; ei < mat[i].size(); ++ei)
       {   
         bool element_has_na = std::isnan(mat[i][ei]) || std::isnan(mat[j][ei]);
-
-        if (element_has_na && na_rm) continue;
-
-        if (element_has_na && !na_rm)
-        {
-          distv = std::numeric_limits<double>::quiet_NaN();
-          break;
-        } 
+        if (element_has_na) continue;
 
         double diff = mat[i][ei] - mat[j][ei];
 
@@ -353,7 +346,7 @@ std::vector<std::vector<size_t>> NN4Mat(
         ++n_valid;
       }
 
-      if (n_valid == 0 || std::isnan(distv)) continue;
+      if (n_valid == 0) continue;
 
       if (dist_method == Dist::DistanceMethod::Euclidean)
         distv = std::sqrt(sum);
