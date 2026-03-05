@@ -307,8 +307,6 @@ std::vector<std::vector<size_t>> NN4Mat(
   std::unordered_set<size_t> lib_set(lib.begin(), lib.end());
 
   for (size_t i = 0; i < n; ++i) {
-    // if (std::isnan(row[i])) continue;
-
     std::vector<std::pair<double, size_t>> candidates;
 
     for (size_t j = 0; j < n; ++j) 
