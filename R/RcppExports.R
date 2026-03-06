@@ -69,6 +69,10 @@ RcppNN4DistMat <- function(distmat, k, include_self = FALSE) {
     .Call(`_infosp_RcppNN4DistMat`, distmat, k, include_self)
 }
 
+RcppNN4DistMatSub <- function(distmat, lib, pred, k, include_self = FALSE) {
+    .Call(`_infosp_RcppNN4DistMatSub`, distmat, lib, pred, k, include_self)
+}
+
 RcppGenSignatureSpace <- function(mat, relative = TRUE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }
