@@ -85,43 +85,43 @@ RcppNN4DistMatSub <- function(distmat, lib, pred, k, include_self = FALSE) {
     .Call(`_infosp_RcppNN4DistMatSub`, distmat, lib, pred, k, include_self)
 }
 
-RcppSPE4Lattice <- function(mat, vars, nb, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE) {
+RcppSPE4Lattice <- function(mat, vars, nb, E, tau, style, relative = FALSE, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppSPE4Lattice`, mat, vars, nb, E, tau, style, relative, base, na_rm)
 }
 
-RcppSPE4Grid <- function(mat, vars, E, tau, style, nrows, relative = TRUE, base = 2.0, na_rm = TRUE) {
+RcppSPE4Grid <- function(mat, vars, E, tau, style, nrows, relative = FALSE, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppSPE4Grid`, mat, vars, E, tau, style, nrows, relative, base, na_rm)
 }
 
-RcppSPE4TS <- function(mat, vars, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE) {
+RcppSPE4TS <- function(mat, vars, E, tau, style, relative = FALSE, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppSPE4TS`, mat, vars, E, tau, style, relative, base, na_rm)
 }
 
-RcppSPMI4Lattice <- function(mat, target, interact, nb, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE) {
+RcppSPMI4Lattice <- function(mat, target, interact, nb, E, tau, style, relative = FALSE, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppSPMI4Lattice`, mat, target, interact, nb, E, tau, style, relative, base, na_rm)
 }
 
-RcppSPMI4Grid <- function(mat, target, interact, E, tau, style, nrows, relative = TRUE, base = 2.0, na_rm = TRUE) {
+RcppSPMI4Grid <- function(mat, target, interact, E, tau, style, nrows, relative = FALSE, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppSPMI4Grid`, mat, target, interact, E, tau, style, nrows, relative, base, na_rm)
 }
 
-RcppSPMI4TS <- function(mat, target, interact, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE) {
+RcppSPMI4TS <- function(mat, target, interact, E, tau, style, relative = FALSE, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppSPMI4TS`, mat, target, interact, E, tau, style, relative, base, na_rm)
 }
 
-RcppPID4Lattice <- function(mat, target, interact, nb, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
+RcppPID4Lattice <- function(mat, target, interact, nb, E, tau, style, relative = FALSE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
     .Call(`_infosp_RcppPID4Lattice`, mat, target, interact, nb, E, tau, style, relative, base, na_rm, normalize, threads, max_order)
 }
 
-RcppPID4Grid <- function(mat, target, interact, E, tau, style, nrows, relative = TRUE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
+RcppPID4Grid <- function(mat, target, interact, E, tau, style, nrows, relative = FALSE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
     .Call(`_infosp_RcppPID4Grid`, mat, target, interact, E, tau, style, nrows, relative, base, na_rm, normalize, threads, max_order)
 }
 
-RcppPID4TS <- function(mat, target, interact, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
+RcppPID4TS <- function(mat, target, interact, E, tau, style, relative = FALSE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
     .Call(`_infosp_RcppPID4TS`, mat, target, interact, E, tau, style, relative, base, na_rm, normalize, threads, max_order)
 }
 
-RcppGenSignatureSpace <- function(mat, relative = TRUE) {
+RcppGenSignatureSpace <- function(mat, relative = FALSE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }
 
@@ -129,7 +129,7 @@ RcppGenPatternSpace <- function(mat, na_rm = TRUE) {
     .Call(`_infosp_RcppGenPatternSpace`, mat, na_rm)
 }
 
-RcppGenSymbolicPattern <- function(mat, relative = TRUE, na_rm = TRUE) {
+RcppGenSymbolicPattern <- function(mat, relative = FALSE, na_rm = TRUE) {
     .Call(`_infosp_RcppGenSymbolicPattern`, mat, relative, na_rm)
 }
 

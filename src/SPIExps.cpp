@@ -20,7 +20,7 @@ double RcppSPE4Lattice(
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true
 ) {
@@ -113,7 +113,7 @@ double RcppSPE4Grid(
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
     int nrows,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true
 ) {
@@ -202,7 +202,7 @@ double RcppSPE4TS(
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true
 ) {
@@ -292,7 +292,7 @@ double RcppSPMI4Lattice(
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true
 ) {
@@ -387,7 +387,7 @@ double RcppSPMI4Grid(
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
     int nrows,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true
 ) {
@@ -478,7 +478,7 @@ double RcppSPMI4TS(
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true
 ) {
@@ -569,7 +569,7 @@ Rcpp::List RcppPID4Lattice(
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true,
     bool normalize = true,
@@ -718,7 +718,7 @@ Rcpp::List RcppPID4Grid(
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
     int nrows,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true,
     bool normalize = true,
@@ -863,7 +863,7 @@ Rcpp::List RcppPID4TS(
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
-    bool relative = true,
+    bool relative = false,
     double base = 2.0,
     bool na_rm = true,
     bool normalize = true,

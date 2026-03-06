@@ -217,7 +217,7 @@ namespace SymDync
     */
     inline std::vector<std::vector<double>> GenSignatureSpace(
         const std::vector<std::vector<double>>& mat,
-        bool relative = true
+        bool relative = false
     ) {
         if (mat.empty()) {
             throw std::invalid_argument("Input matrix must not be empty.");
@@ -379,7 +379,7 @@ namespace SymDync
     */
     inline std::vector<std::vector<uint8_t>> GenSymbolicPattern(
         const std::vector<std::vector<double>>& mat,
-        bool relative = true,
+        bool relative = false,
         bool na_rm = true
     ) {
         if (mat.empty()) {

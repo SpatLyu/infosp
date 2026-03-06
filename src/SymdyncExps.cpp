@@ -12,7 +12,7 @@
 // [[Rcpp::export(rng = false)]]
 Rcpp::NumericMatrix RcppGenSignatureSpace(
     const Rcpp::NumericMatrix& mat,
-    bool relative = true
+    bool relative = false
 )
 {
     const size_t n_rows = mat.nrow();
@@ -69,7 +69,7 @@ Rcpp::CharacterVector RcppGenPatternSpace(
 // [[Rcpp::export(rng = false)]]
 Rcpp::CharacterVector RcppGenSymbolicPattern(
     const Rcpp::NumericMatrix& mat,
-    bool relative = true,
+    bool relative = false,
     bool na_rm = true
 )
 {
