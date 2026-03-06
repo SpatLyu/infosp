@@ -335,6 +335,62 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppSPMI4Lattice
+double RcppSPMI4Lattice(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& target, const Rcpp::IntegerVector& interact, const Rcpp::List& nb, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, bool relative, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppSPMI4Lattice(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP nbSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP, SEXP relativeSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type target(targetSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type interact(interactSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type nb(nbSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type style(styleSEXP);
+    Rcpp::traits::input_parameter< bool >::type relative(relativeSEXP);
+    Rcpp::traits::input_parameter< double >::type base(baseSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppSPMI4Lattice(mat, target, interact, nb, E, tau, style, relative, base, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// RcppSPMI4Grid
+double RcppSPMI4Grid(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& target, const Rcpp::IntegerVector& interact, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, int nrows, bool relative, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppSPMI4Grid(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP, SEXP nrowsSEXP, SEXP relativeSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type target(targetSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type interact(interactSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type style(styleSEXP);
+    Rcpp::traits::input_parameter< int >::type nrows(nrowsSEXP);
+    Rcpp::traits::input_parameter< bool >::type relative(relativeSEXP);
+    Rcpp::traits::input_parameter< double >::type base(baseSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppSPMI4Grid(mat, target, interact, E, tau, style, nrows, relative, base, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// RcppSPMI4TS
+double RcppSPMI4TS(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& target, const Rcpp::IntegerVector& interact, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, bool relative, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppSPMI4TS(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP, SEXP relativeSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type target(targetSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type interact(interactSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type style(styleSEXP);
+    Rcpp::traits::input_parameter< bool >::type relative(relativeSEXP);
+    Rcpp::traits::input_parameter< double >::type base(baseSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppSPMI4TS(mat, target, interact, E, tau, style, relative, base, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RcppGenSignatureSpace
 Rcpp::NumericMatrix RcppGenSignatureSpace(const Rcpp::NumericMatrix& mat, bool relative);
 RcppExport SEXP _infosp_RcppGenSignatureSpace(SEXP matSEXP, SEXP relativeSEXP) {
@@ -406,6 +462,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppSPE4Lattice", (DL_FUNC) &_infosp_RcppSPE4Lattice, 9},
     {"_infosp_RcppSPE4Grid", (DL_FUNC) &_infosp_RcppSPE4Grid, 9},
     {"_infosp_RcppSPE4TS", (DL_FUNC) &_infosp_RcppSPE4TS, 8},
+    {"_infosp_RcppSPMI4Lattice", (DL_FUNC) &_infosp_RcppSPMI4Lattice, 10},
+    {"_infosp_RcppSPMI4Grid", (DL_FUNC) &_infosp_RcppSPMI4Grid, 10},
+    {"_infosp_RcppSPMI4TS", (DL_FUNC) &_infosp_RcppSPMI4TS, 9},
     {"_infosp_RcppGenSignatureSpace", (DL_FUNC) &_infosp_RcppGenSignatureSpace, 2},
     {"_infosp_RcppGenPatternSpace", (DL_FUNC) &_infosp_RcppGenPatternSpace, 2},
     {"_infosp_RcppGenSymbolicPattern", (DL_FUNC) &_infosp_RcppGenSymbolicPattern, 3},
