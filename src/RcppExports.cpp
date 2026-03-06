@@ -193,13 +193,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppNN4Mat
-Rcpp::List RcppNN4Mat(const Rcpp::NumericMatrix& mat, int k, std::string& method, bool include_self);
+Rcpp::List RcppNN4Mat(const Rcpp::NumericMatrix& mat, int k, std::string method, bool include_self);
 RcppExport SEXP _infosp_RcppNN4Mat(SEXP matSEXP, SEXP kSEXP, SEXP methodSEXP, SEXP include_selfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< std::string& >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< std::string >::type method(methodSEXP);
     Rcpp::traits::input_parameter< bool >::type include_self(include_selfSEXP);
     rcpp_result_gen = Rcpp::wrap(RcppNN4Mat(mat, k, method, include_self));
     return rcpp_result_gen;
