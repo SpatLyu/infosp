@@ -45,8 +45,8 @@
 #include <cstddef>
 #include <utility>
 
-namespace Embed {
-    
+namespace Embed 
+{
     /* =============================================================
     * Type aliases
     * ============================================================= */
