@@ -30,15 +30,6 @@ Rcpp::List RcppNN4Mat(
     std::vector<std::vector<size_t>> neighbours = NN::NN4Mat(
         cppMat, static_cast<size_t>(std::abs(k)), method, include_self);
 
-    // Convert std::vector<std::vector<size_t>> to Rcpp::IntegerMatrix
-    int rows = distm.size();
-    int cols = distm[0].size();
-    Rcpp::NumericMatrix result(rows, cols);
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            result(i, j) = distm[i][j];
-        }
-    }
-
-    return result;
+    // Return nb object (List in R side)
+    return std2nb(neighbours);
 }
