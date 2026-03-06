@@ -38,7 +38,11 @@
  *  Notes:
  *      Self matching is excluded by default.
  *      If include_self = true, self index will be placed first.
+ *
  *      Self inclusion does NOT count toward the k limit when k > 0.
+ *
+ *      If fewer than k valid neighbors are available, 
+ *      all valid candidates are returned.
  *
  *  Author: Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
