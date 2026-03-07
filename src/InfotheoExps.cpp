@@ -49,7 +49,7 @@ double RcppEntropy(SEXP series,
 // Wrapper function to calculate joint entropy
 // [[Rcpp::export(rng = false)]]
 double RcppJE(SEXP mat,
-              Rcpp::IntegerVector vars,
+              const Rcpp::IntegerVector& vars,
               double base = 2.0,
               bool na_rm = true)
 {
