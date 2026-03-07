@@ -106,8 +106,8 @@ double RcppCE(SEXP mat,
 // Wrapper function to calculate mutual information
 // [[Rcpp::export(rng = false)]]
 double RcppMI(SEXP mat,
-              Rcpp::IntegerVector target,
-              Rcpp::IntegerVector interact,
+              const Rcpp::IntegerVector& target,
+              const Rcpp::IntegerVector& interact,
               double base = 2.0,
               bool na_rm = true)
 {
