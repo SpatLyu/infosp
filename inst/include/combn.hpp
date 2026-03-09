@@ -1,4 +1,4 @@
-/***************************************************************
+/**************************************************************************
  * File: combn.hpp
  *
  * Combinatorial utilities for generating combinations and subsets.
@@ -12,7 +12,7 @@
  *
  *  Author: Wenbo Lyu (Github: @SpatLyu)
  *  License: GPL-3
- */
+ *************************************************************************/
 
 #ifndef COMBN_HPP
 #define COMBN_HPP
