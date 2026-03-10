@@ -193,7 +193,7 @@ Rcpp::List RcppSURD(SEXP mat,
     InfoTheo::Matrix m = mat2patmat(mat);
 
     SURD::SURDRes res =
-        SURD::SURD(m, base, na_rm, normalize, (size_t)threads);
+        SURD::SURD(m, base, na_rm, normalize, static_cast<size_t>(std::abs(threads)));
 
     const size_t k = res.size();
 
