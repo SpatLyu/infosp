@@ -65,6 +65,10 @@ RcppCMI <- function(mat, target, interact, conds, base = 2.0, na_rm = TRUE) {
     .Call(`_infosp_RcppCMI`, mat, target, interact, conds, base, na_rm)
 }
 
+RcppSURD <- function(mat, base = 2.0, na_rm = TRUE, normalize = FALSE, threads = 1L) {
+    .Call(`_infosp_RcppSURD`, mat, base, na_rm, normalize, threads)
+}
+
 RcppNN4Mat <- function(mat, k, method = "euclidean", include_self = FALSE) {
     .Call(`_infosp_RcppNN4Mat`, mat, k, method, include_self)
 }
