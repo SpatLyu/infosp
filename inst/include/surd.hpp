@@ -29,9 +29,8 @@
 #include <mutex>
 #include <algorithm>
 #include <cmath>
-
-#include "infotheo.hpp"
 #include "combn.hpp"
+#include "infotheo.hpp"
 
 namespace SURD
 {
