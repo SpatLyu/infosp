@@ -67,7 +67,7 @@ namespace SURD
     {
         std::vector<std::vector<size_t>> table(total_masks);
 
-        for (uint64_t mask = 2; mask < total_masks; ++mask)
+        for (uint64_t mask = 1; mask < total_masks; ++mask)
         {
             std::vector<size_t> vars;
 
