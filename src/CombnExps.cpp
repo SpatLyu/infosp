@@ -5,7 +5,7 @@
 
 // Helper: convert C++ vector-of-vectors result to Rcpp::List
 template <typename T>
-Rcpp::List convertToRList(const std::vector<std::vector<T>>& cpp_result) {
+Rcpp::List convert2RList(const std::vector<std::vector<T>>& cpp_result) {
     Rcpp::List out(cpp_result.size());
     for (size_t i = 0; i < cpp_result.size(); ++i) {
         out[i] = Rcpp::wrap(cpp_result[i]);
