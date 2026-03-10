@@ -6,6 +6,7 @@
 #include <numeric>
 #include <algorithm>
 #include "infotheo.hpp"
+#include "surd.hpp"
 #include "DataTrans.h"
 
 // Wrapper function to calculate Shannon entropy
@@ -180,3 +181,11 @@ double RcppCMI(SEXP mat,
 
     return InfoTheo::CMI(m, t, i, c, base, na_rm);
 }
+
+// Wrapper function to calculate conditional mutual information
+// [[Rcpp::export(rng = false)]]
+double RcppSURD(SEXP mat,
+                double base = 2.0,
+                bool na_rm = true,
+                bool normalize = false,
+                int threads = 1)
