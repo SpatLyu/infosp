@@ -29,7 +29,6 @@
 #include <mutex>
 #include <algorithm>
 #include <cmath>
-
 #include "combn.hpp"
 #include "infotheo.hpp"
 
