@@ -15,10 +15,6 @@
  * Optional normalization rescales the decomposed information
  * components (redundant, unique, synergistic) into [0,1].
  *
- * Dependencies:
- *   infotheo.hpp
- *   combn.hpp
- *
  * Author: Wenbo Lyu (Github: @SpatLyu)
  * License: GPL-3
  **********************************************************************/
