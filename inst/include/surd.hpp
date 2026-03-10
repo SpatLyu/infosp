@@ -159,7 +159,7 @@ inline SURDRes SURD(
     double base = 2.0,
     bool na_rm = true,
     bool normalize = false,
-    size_t n_threads = 1)
+    size_t threads = 1)
 {
     SURDRes result;
 
@@ -178,7 +178,7 @@ inline SURDRes SURD(
         return result;
 
     EntropyCache cache =
-        precompute_entropies(mat, subsets, base, na_rm, n_threads);
+        precompute_entropies(mat, subsets, base, na_rm, threads);
 
     struct Entry
     {
