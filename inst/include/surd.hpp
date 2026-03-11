@@ -281,7 +281,7 @@ namespace SURD
         /***********************************************************
         * Group by order
         ***********************************************************/
-        std::vector<std::vector<Entry*>> groups(n_sources + 1);
+        std::vector<std::vector<Entry*>> groups(max_order + 1);
 
         for (auto& e : entries)
             groups[e.order].push_back(&e);
