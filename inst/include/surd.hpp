@@ -283,6 +283,15 @@ namespace SURD
         for (auto& g : groups)
             std::sort(g.begin(), g.end(),
                     [](Entry* a, Entry* b)
+                    {
+                        if (!NumericUtils::doubleNearlyEqual(a->mi, b->mi))
+                            return a->mi < b->mi;
+
+                        // tie-breaker: deterministic
+                        return a->mask < b->mask;
+                    });
+            std::sort(g.begin(), g.end(),
+                    [](Entry* a, Entry* b)
                     { return a->mi < b->mi; });
 
         const double eps = 1e-12;
