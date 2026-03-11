@@ -250,7 +250,7 @@ namespace SURD
         };
 
         std::vector<Entry> entries;
-        entries.reserve((1ULL << n_sources) - 1);
+        entries.reserve((1ULL << std::min(max_order, n_sources)) - 1);
 
         const uint64_t start_mask = 2ULL;
 
