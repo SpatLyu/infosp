@@ -238,6 +238,7 @@ namespace InfoTheo
           }
         }
         std::vector<size_t> clean_vars(valid_vars.begin(), valid_vars.end());
+        std::sort(clean_vars.begin(), clean_vars.end());
 
         std::unordered_map<PackedKey, size_t, PackedKeyHash> freq;
         freq.reserve(n_obs * 1.3);
