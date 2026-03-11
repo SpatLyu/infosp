@@ -127,16 +127,17 @@ std::vector<std::vector<uint8_t>> vec2pat(const Rcpp::CharacterVector& v);
  *          n rows  = observations
  *          p cols  = variables
  *
- *      C++ std::vector<std::vector<std::vector<uint8_t>>>:
+ *      C++:
  *          Matrix[var][obs]
  *
- *  Each column of the R matrix is converted using vec2pat,
- *  producing a PatternSeries (std::vector<std::vector<uint8_t>>). 
- *  The PatternSeries objects are stored sequentially into the 
- *  Matrix container (std::vector<std::vector<std::vector<uint8_t>>>).
+ *  Design:
+ *      - Scan matrix once to collect global unique values
+ *      - Sort uniques
+ *      - Assign id 1..uniq
+ *      - Encode each element via index2base4
  *
  *  NA handling:
- *      Delegated to vec2pat.
+ *      NA encoded as {0}
  *
  ********************************************************************/
 std::vector<std::vector<std::vector<uint8_t>>> mat2patmat(SEXP x);
