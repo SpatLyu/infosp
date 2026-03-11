@@ -249,8 +249,16 @@ namespace SURD
             uint8_t order;
         };
 
+        size_t approx = 0;
+        for (size_t k = 1; k <= max_order; ++k)
+        {
+            size_t c = 1;
+            for (size_t i = 0; i < k; ++i)
+                c = c * (n_sources - i) / (i + 1);
+            approx += c;
+        }
         std::vector<Entry> entries;
-        entries.reserve((1ULL << std::min(max_order, n_sources)) - 1);
+        entries.reserve(approx);
 
         const uint64_t start_mask = 2ULL;
 
