@@ -341,7 +341,7 @@ namespace SURD
         /***********************************************************
         * Higher order synergy
         ***********************************************************/
-        for (size_t m = 2; m <= n_sources; ++m)
+        for (size_t m = 2; m <= max_order; ++m)
         {
             if (groups[m].empty())
                 continue;
