@@ -260,7 +260,7 @@ namespace SURD
                 continue;
 
             uint8_t order = popcount[mask];
-            if (order > max_order)
+            if (static_cast<size_t>(order) > max_order)
                 continue;
 
             double mi = compute_mi(H, mask);
