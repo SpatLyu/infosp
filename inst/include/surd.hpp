@@ -42,6 +42,7 @@
 #include <limits>
 #include <stdexcept>
 #include "infotheo.hpp"
+#include "numericutils.hpp"
 
 namespace SURD
 {
