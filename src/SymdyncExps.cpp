@@ -67,7 +67,7 @@ Rcpp::CharacterVector RcppGenPatternSpace(
 
 // Wrapper function to generates a symbolic pattern representation from a continuous state space matrix.
 // [[Rcpp::export(rng = false)]]
-Rcpp::CharacterVector RcppGenSymbolization(
+Rcpp::CharacterVector RcppGenSymbolicPattern(
     const Rcpp::NumericMatrix& mat,
     bool relative = true,
     bool na_rm = true
@@ -85,7 +85,7 @@ Rcpp::CharacterVector RcppGenSymbolization(
         for (size_t j = 0; j < n_cols; ++j)
             input[i][j] = mat(i, j);
 
-    auto pat = SymDync::GenSymbolization(input, relative, na_rm);
+    auto pat = SymDync::GenSymbolicPattern(input, relative, na_rm);
     return pat2vec(pat);
 }
 
