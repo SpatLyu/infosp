@@ -93,6 +93,10 @@ RcppGenPatternSpace <- function(mat, na_rm = TRUE) {
     .Call(`_infosp_RcppGenPatternSpace`, mat, na_rm)
 }
 
+RcppGenSymbolization <- function(mat, relative = TRUE, na_rm = TRUE) {
+    .Call(`_infosp_RcppGenSymbolization`, mat, relative, na_rm)
+}
+
 RcppCountSignProp <- function(pat1, pat2) {
     .Call(`_infosp_RcppCountSignProp`, pat1, pat2)
 }

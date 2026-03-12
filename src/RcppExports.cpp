@@ -304,6 +304,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppGenSymbolization
+Rcpp::CharacterVector RcppGenSymbolization(const Rcpp::NumericMatrix& mat, bool relative, bool na_rm);
+RcppExport SEXP _infosp_RcppGenSymbolization(SEXP matSEXP, SEXP relativeSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< bool >::type relative(relativeSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppGenSymbolization(mat, relative, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RcppCountSignProp
 Rcpp::NumericVector RcppCountSignProp(const Rcpp::CharacterVector& pat1, const Rcpp::CharacterVector& pat2);
 RcppExport SEXP _infosp_RcppCountSignProp(SEXP pat1SEXP, SEXP pat2SEXP) {
@@ -340,6 +352,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppNN4DistMatSub", (DL_FUNC) &_infosp_RcppNN4DistMatSub, 5},
     {"_infosp_RcppGenSignatureSpace", (DL_FUNC) &_infosp_RcppGenSignatureSpace, 2},
     {"_infosp_RcppGenPatternSpace", (DL_FUNC) &_infosp_RcppGenPatternSpace, 2},
+    {"_infosp_RcppGenSymbolization", (DL_FUNC) &_infosp_RcppGenSymbolization, 3},
     {"_infosp_RcppCountSignProp", (DL_FUNC) &_infosp_RcppCountSignProp, 2},
     {NULL, NULL, 0}
 };
