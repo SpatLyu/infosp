@@ -33,6 +33,13 @@ double RcppSPE4Lattice(
     }
     const size_t n_vars = v.size();
 
+    std::vector<std::vector<double>> cppMat(n_vars, std::vector<double>(n_obs));
+    for (int r = 0; r < n_obs; ++r) {
+        for (int c = 0; c < n_vars; ++c) {
+            cppMat[c][r] = mat(r, c);
+        }
+    }
+
     std::vector<std::vector<std::vector<uint8_t>>> pm;
     pm.resize(n_vars);
         for (size_t j = 0; j < n_vars; ++j)
