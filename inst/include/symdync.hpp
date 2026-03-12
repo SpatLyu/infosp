@@ -370,7 +370,7 @@ namespace SymDync
     * @return          Symbolic pattern matrix [n_rows x (n_cols - 1)], each row is a uint8_t vector.
     * @throws std::invalid_argument if input is empty or has fewer than 2 columns.
     */
-    inline std::vector<std::vector<uint8_t>> GenSymbolization(
+    inline std::vector<std::vector<uint8_t>> GenSymbolicPattern(
         const std::vector<std::vector<double>>& mat,
         bool relative = true,
         bool na_rm = true
