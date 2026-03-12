@@ -39,7 +39,7 @@ double RcppSPE4Lattice(
     std::vector<std::vector<std::vector<uint8_t>>> pm;
     pm.resize(n_vars);
         for (size_t j = 0; j < n_vars; ++j)
-            mat[j].reserve(n_obs);
+            pm[j].reserve(n_obs);
 
     for (size_t idx : v) {
         std::vector<double> vec(n_obs);
