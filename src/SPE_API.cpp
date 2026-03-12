@@ -17,10 +17,10 @@ double RcppSPE4Lattice(
     bool relative = true,
     double base = 2.0,
     bool na_rm = true
-) {
-    std::vector<size_t> v = Rcpp::as<std::vector<size_t>>(vars);
-
+) { 
     const size_t n_cols = m.size();
+
+    std::vector<size_t> v = Rcpp::as<std::vector<size_t>>(vars);
     for (auto& idx : v) {
         if (idx < 1 || idx > n_cols) {
             Rcpp::stop("Column index %d out of bounds [1, %d]", 
@@ -29,4 +29,6 @@ double RcppSPE4Lattice(
         }
         idx -= 1;  // to 0-based
     }
+
+    
 }
