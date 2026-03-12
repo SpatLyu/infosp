@@ -36,12 +36,19 @@
  *
  *         std::vector<std::vector<uint8_t>>
  *
- *  3. CountSignProp
+ *  3. GenSymbolicPattern
+ *
+ *     Combines the functionality of GenSignatureSpace and GenPatternSpace
+ *     into a single step. For each row of a state space matrix:
+ *
+ *     Output type: std::vector<std::vector<uint8_t>>
+ *
+ *  4. CountSignProp
  *
  *     Compares two symbolic pattern spaces and computes the
  *     proportion of sign agreement and disagreement.
  *
- *  4. ComputePatternCausality
+ *  5. ComputePatternCausality
  *
  *     Constructs a complete symbolic pattern space, enforces
  *     symmetric closure, builds a causal heatmap and classifies
