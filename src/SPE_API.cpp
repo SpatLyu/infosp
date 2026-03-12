@@ -22,8 +22,8 @@ double RcppSPE4Lattice(
     bool na_rm = true
 ) {
     // Basic matrix dimensions
-    const size_t n_cols = static_cast<size_t>(std::abs(mat.ncol()));
-    const size_t n_obs  = static_cast<size_t>(std::abs(mat.nrow()));
+    const size_t n_cols = static_cast<size_t>(mat.ncol());
+    const size_t n_obs  = static_cast<size_t>(mat.nrow());
 
     // Convert R variable indices -> C++ (0-based)
     std::vector<size_t> v = Rcpp::as<std::vector<size_t>>(vars);
