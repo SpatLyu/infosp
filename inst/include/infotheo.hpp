@@ -176,7 +176,7 @@ namespace InfoTheo
             if (shift > 0)
                 key.blocks.push_back(cur);
 
-            // key.blocks.push_back(static_cast<uint64_t>(p.size()));
+            key.blocks.push_back(static_cast<uint64_t>(p.size()));
         }
 
         return true;
