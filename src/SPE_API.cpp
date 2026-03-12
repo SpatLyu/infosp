@@ -33,6 +33,9 @@ double RcppSPE4Lattice(
     }
     const size_t n_vars = v.size();
 
+    // Convert Rcpp::List to std::vector<std::vector<size_t>>
+    std::vector<std::vector<size_t>> nb_std = nb2std(nb);
+
     std::vector<std::vector<std::vector<uint8_t>>> pm;
     pm.resize(n_vars);
         for (size_t j = 0; j < n_vars; ++j)
@@ -43,6 +46,13 @@ double RcppSPE4Lattice(
         for (size_t r = 0; r < n_obs; ++r) {
             vec[r] = mat(r, idx);
         }
+
+        // Generate embedding
+        std::vector<std::vector<double>> embeddings =
+            Embed::GenLatticeEmbedding(vec, nb_std,
+                                       static_cast<size_t>(std::abs(E)),
+                                       static_cast<size_t>(std::abs(tau)),
+                                       static_cast<size_t>(std::abs(style)));
     }
 
 
