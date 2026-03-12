@@ -85,6 +85,10 @@ RcppNN4DistMatSub <- function(distmat, lib, pred, k, include_self = FALSE) {
     .Call(`_infosp_RcppNN4DistMatSub`, distmat, lib, pred, k, include_self)
 }
 
+RcppSPE4Lattice <- function(mat, vars, nb, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppSPE4Lattice`, mat, vars, nb, E, tau, style, relative, base, na_rm)
+}
+
 RcppGenSignatureSpace <- function(mat, relative = TRUE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }

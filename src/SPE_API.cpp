@@ -7,6 +7,7 @@
 #include "symdync.hpp"
 #include "infotheo.hpp"
 #include "surd.hpp"
+#include "DataTrans.h"
 
 // Wrapper function to calculate pattern entropy for spatial lattice data 
 // [[Rcpp::export(rng = false)]]
