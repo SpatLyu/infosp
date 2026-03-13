@@ -318,6 +318,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppSPE4TS
+double RcppSPE4TS(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& vars, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, bool relative, double base, bool na_rm);
+RcppExport SEXP _infosp_RcppSPE4TS(SEXP matSEXP, SEXP varsSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP, SEXP relativeSEXP, SEXP baseSEXP, SEXP na_rmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type vars(varsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type style(styleSEXP);
+    Rcpp::traits::input_parameter< bool >::type relative(relativeSEXP);
+    Rcpp::traits::input_parameter< double >::type base(baseSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppSPE4TS(mat, vars, E, tau, style, relative, base, na_rm));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RcppGenSignatureSpace
 Rcpp::NumericMatrix RcppGenSignatureSpace(const Rcpp::NumericMatrix& mat, bool relative);
 RcppExport SEXP _infosp_RcppGenSignatureSpace(SEXP matSEXP, SEXP relativeSEXP) {
@@ -388,6 +405,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppNN4DistMatSub", (DL_FUNC) &_infosp_RcppNN4DistMatSub, 5},
     {"_infosp_RcppSPE4Lattice", (DL_FUNC) &_infosp_RcppSPE4Lattice, 9},
     {"_infosp_RcppSPE4Grid", (DL_FUNC) &_infosp_RcppSPE4Grid, 9},
+    {"_infosp_RcppSPE4TS", (DL_FUNC) &_infosp_RcppSPE4TS, 8},
     {"_infosp_RcppGenSignatureSpace", (DL_FUNC) &_infosp_RcppGenSignatureSpace, 2},
     {"_infosp_RcppGenPatternSpace", (DL_FUNC) &_infosp_RcppGenPatternSpace, 2},
     {"_infosp_RcppGenSymbolicPattern", (DL_FUNC) &_infosp_RcppGenSymbolicPattern, 3},

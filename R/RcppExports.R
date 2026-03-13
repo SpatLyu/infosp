@@ -93,6 +93,10 @@ RcppSPE4Grid <- function(mat, vars, E, tau, style, nrows, relative = TRUE, base 
     .Call(`_infosp_RcppSPE4Grid`, mat, vars, E, tau, style, nrows, relative, base, na_rm)
 }
 
+RcppSPE4TS <- function(mat, vars, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE) {
+    .Call(`_infosp_RcppSPE4TS`, mat, vars, E, tau, style, relative, base, na_rm)
+}
+
 RcppGenSignatureSpace <- function(mat, relative = TRUE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }
