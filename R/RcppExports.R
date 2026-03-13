@@ -109,6 +109,10 @@ RcppSPMI4TS <- function(mat, target, interact, E, tau, style, relative = TRUE, b
     .Call(`_infosp_RcppSPMI4TS`, mat, target, interact, E, tau, style, relative, base, na_rm)
 }
 
+RcppPID4Lattice <- function(mat, target, interact, nb, E, tau, style, relative = TRUE, base = 2.0, na_rm = TRUE, normalize = TRUE, threads = 1L, max_order = 3L) {
+    .Call(`_infosp_RcppPID4Lattice`, mat, target, interact, nb, E, tau, style, relative, base, na_rm, normalize, threads, max_order)
+}
+
 RcppGenSignatureSpace <- function(mat, relative = TRUE) {
     .Call(`_infosp_RcppGenSignatureSpace`, mat, relative)
 }

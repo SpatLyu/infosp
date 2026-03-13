@@ -391,6 +391,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RcppPID4Lattice
+double RcppPID4Lattice(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& target, const Rcpp::IntegerVector& interact, const Rcpp::List& nb, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, bool relative, double base, bool na_rm, bool normalize, int threads, int max_order);
+RcppExport SEXP _infosp_RcppPID4Lattice(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP nbSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP, SEXP relativeSEXP, SEXP baseSEXP, SEXP na_rmSEXP, SEXP normalizeSEXP, SEXP threadsSEXP, SEXP max_orderSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericMatrix& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type target(targetSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type interact(interactSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List& >::type nb(nbSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type E(ESEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::IntegerVector& >::type style(styleSEXP);
+    Rcpp::traits::input_parameter< bool >::type relative(relativeSEXP);
+    Rcpp::traits::input_parameter< double >::type base(baseSEXP);
+    Rcpp::traits::input_parameter< bool >::type na_rm(na_rmSEXP);
+    Rcpp::traits::input_parameter< bool >::type normalize(normalizeSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_order(max_orderSEXP);
+    rcpp_result_gen = Rcpp::wrap(RcppPID4Lattice(mat, target, interact, nb, E, tau, style, relative, base, na_rm, normalize, threads, max_order));
+    return rcpp_result_gen;
+END_RCPP
+}
 // RcppGenSignatureSpace
 Rcpp::NumericMatrix RcppGenSignatureSpace(const Rcpp::NumericMatrix& mat, bool relative);
 RcppExport SEXP _infosp_RcppGenSignatureSpace(SEXP matSEXP, SEXP relativeSEXP) {
@@ -465,6 +487,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_infosp_RcppSPMI4Lattice", (DL_FUNC) &_infosp_RcppSPMI4Lattice, 10},
     {"_infosp_RcppSPMI4Grid", (DL_FUNC) &_infosp_RcppSPMI4Grid, 10},
     {"_infosp_RcppSPMI4TS", (DL_FUNC) &_infosp_RcppSPMI4TS, 9},
+    {"_infosp_RcppPID4Lattice", (DL_FUNC) &_infosp_RcppPID4Lattice, 13},
     {"_infosp_RcppGenSignatureSpace", (DL_FUNC) &_infosp_RcppGenSignatureSpace, 2},
     {"_infosp_RcppGenPatternSpace", (DL_FUNC) &_infosp_RcppGenPatternSpace, 2},
     {"_infosp_RcppGenSymbolicPattern", (DL_FUNC) &_infosp_RcppGenSymbolicPattern, 3},
