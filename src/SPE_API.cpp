@@ -2,6 +2,7 @@
 #include <cmath>
 #include <limits>
 #include <cstdint>
+#include <numeric>
 #include <algorithm>
 #include <unordered_set>
 #include "embed.hpp"
