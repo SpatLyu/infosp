@@ -653,6 +653,8 @@ double RcppPID4Lattice(
     std::vector<size_t> je_iv(iv.size());
     std::iota(je_iv.begin(), je_iv.end(), tv.size());
 
-    // Compute mutual information
-    return InfoTheo::MI(pm, je_tv, je_iv, base, na_rm);
+    // Compute information decomposition
+    return SURD::SURD(pm, base, na_rm, normalize, 
+                      static_cast<size_t>(std::abs(threads)),
+                      static_cast<size_t>(std::abs(max_order)));
 }
