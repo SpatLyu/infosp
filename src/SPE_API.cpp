@@ -146,9 +146,6 @@ double RcppSPE4Grid(
         return std::numeric_limits<double>::quiet_NaN();
     }
 
-    // Convert R neighbor structure -> std::vector<std::vector<size_t>>
-    std::vector<std::vector<size_t>> nb_std = nb2std(nb);
-
     // Pattern matrix
     std::vector<std::vector<std::vector<uint8_t>>> pm;
     pm.resize(n_vars);
@@ -163,18 +160,17 @@ double RcppSPE4Grid(
     {
         size_t col_id = v[j];
 
-        // Extract column vector from R matrix
-        std::vector<double> vec(n_obs);
+        // Extract subset matrix from R matrix
+        std::vector<double> cm(nrows, std::vector<double>(n_obs / nrows));
         for (size_t r = 0; r < n_obs; ++r)
         {
-            vec[r] = mat(r, col_id);
+            cm[r % nrows][r / nrows] = mat(r, col_id);
         }
 
         // Generate lattice embedding
         std::vector<std::vector<double>> embeddings =
             Embed::GenLatticeEmbedding(
-                vec,
-                nb_std,
+                cm,
                 static_cast<size_t>(std::abs(E[col_id])),
                 static_cast<size_t>(std::abs(tau[col_id])),
                 static_cast<size_t>(std::abs(style[col_id]))
