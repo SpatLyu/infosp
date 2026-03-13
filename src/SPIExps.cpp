@@ -561,7 +561,7 @@ double RcppSPMI4TS(
 
 // Wrapper function to calculate pattern information decomposition for spatial lattice data 
 // [[Rcpp::export(rng = false)]]
-double RcppPID4Lattice(
+Rcpp::List RcppPID4Lattice(
     const Rcpp::NumericMatrix& mat,
     const Rcpp::IntegerVector& target,
     const Rcpp::IntegerVector& interact,
@@ -654,7 +654,66 @@ double RcppPID4Lattice(
     std::iota(je_iv.begin(), je_iv.end(), tv.size());
 
     // Compute information decomposition
-    return SURD::SURD(pm, base, na_rm, normalize, 
-                      static_cast<size_t>(std::abs(threads)),
-                      static_cast<size_t>(std::abs(max_order)));
+    SURD::SURDRes res =
+        SURD::SURD(m, base, na_rm, normalize, 
+                   static_cast<size_t>(std::abs(threads)),
+                   static_cast<size_t>(std::abs(max_order)));
+
+    const size_t k = res.size();
+
+    Rcpp::NumericVector values(k);
+    Rcpp::CharacterVector types(k);
+    Rcpp::CharacterVector names(k);
+
+    for (size_t i = 0; i < k; ++i)
+    {
+        values[i] = res.values[i];
+
+        // variable name
+        if (res.types[i] == 3)
+        {
+            // InfoLeak uses all sources
+            std::string nm = "InfoLeak";
+            names[i] = nm;
+            types[i] = "InfoLeak";
+            continue;
+        }
+
+        const auto& vars = res.var_indices[i];
+
+        std::string nm;
+
+        for (size_t j = 0; j < vars.size(); ++j)
+        {
+            if (j > 0)
+                nm += "_";
+
+            nm += "V";
+            nm += std::to_string(vars[j]);
+        }
+
+        names[i] = nm;
+
+        switch (res.types[i])
+        {
+            case 0:
+                types[i] = "R";
+                break;
+            case 1:
+                types[i] = "U";
+                break;
+            case 2:
+                types[i] = "S";
+                break;
+            default:
+                types[i] = "Unknown";
+        }
+    }
+
+    values.attr("names") = names;
+
+    return Rcpp::List::create(
+        Rcpp::Named("values") = values,
+        Rcpp::Named("types")  = types
+    );
 }
