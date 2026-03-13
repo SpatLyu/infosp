@@ -392,7 +392,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // RcppPID4Lattice
-double RcppPID4Lattice(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& target, const Rcpp::IntegerVector& interact, const Rcpp::List& nb, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, bool relative, double base, bool na_rm, bool normalize, int threads, int max_order);
+Rcpp::List RcppPID4Lattice(const Rcpp::NumericMatrix& mat, const Rcpp::IntegerVector& target, const Rcpp::IntegerVector& interact, const Rcpp::List& nb, const Rcpp::IntegerVector& E, const Rcpp::IntegerVector& tau, const Rcpp::IntegerVector& style, bool relative, double base, bool na_rm, bool normalize, int threads, int max_order);
 RcppExport SEXP _infosp_RcppPID4Lattice(SEXP matSEXP, SEXP targetSEXP, SEXP interactSEXP, SEXP nbSEXP, SEXP ESEXP, SEXP tauSEXP, SEXP styleSEXP, SEXP relativeSEXP, SEXP baseSEXP, SEXP na_rmSEXP, SEXP normalizeSEXP, SEXP threadsSEXP, SEXP max_orderSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
