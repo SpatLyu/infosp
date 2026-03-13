@@ -299,19 +299,24 @@ double RcppSPMI4Lattice(
     const size_t n_obs  = static_cast<size_t>(mat.nrow());
 
     // Convert R variable indices -> C++ (0-based)
-    std::vector<size_t> v = Rcpp::as<std::vector<size_t>>(vars);
-    for (auto& idx : v)
-    {
-        if (idx < 1 || idx > n_cols)
-        {
-            Rcpp::stop(
-                "Column index %d out of bounds [1, %d]",
-                static_cast<int>(idx),
-                static_cast<int>(n_cols)
-            );
-        }
+    std::vector<size_t> t = Rcpp::as<std::vector<size_t>>(target);
+    std::vector<size_t> i = Rcpp::as<std::vector<size_t>>(interact);
 
-        idx -= 1;  // convert to 0-based indexing
+    for (auto& idx : t) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Target index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    for (auto& idx : i) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Interact index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
     }
 
     const size_t n_vars = v.size();
