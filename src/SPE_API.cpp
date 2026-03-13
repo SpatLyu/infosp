@@ -3,6 +3,7 @@
 #include <limits>
 #include <cstdint>
 #include <algorithm>
+#include <unordered_set>
 #include "embed.hpp"
 #include "symdync.hpp"
 #include "infotheo.hpp"
@@ -299,8 +300,8 @@ double RcppSPMI4Lattice(
     const size_t n_obs  = static_cast<size_t>(mat.nrow());
 
     // Convert R variable indices -> C++ (0-based)
-    std::vector<size_t> t = Rcpp::as<std::vector<size_t>>(target);
-    for (auto& idx : t) {
+    std::vector<size_t> tv = Rcpp::as<std::vector<size_t>>(target);
+    for (auto& idx : tv) {
         if (idx < 1 || idx > n_cols) {
             Rcpp::stop("Target index %d out of bounds [1, %d]", 
                        static_cast<int>(idx), 
@@ -308,9 +309,9 @@ double RcppSPMI4Lattice(
         }
         idx -= 1;  // to 0-based
     }
-    
-    std::vector<size_t> i = Rcpp::as<std::vector<size_t>>(interact);
-    for (auto& idx : i) {
+
+    std::vector<size_t> iv = Rcpp::as<std::vector<size_t>>(interact);
+    for (auto& idx : iv) {
         if (idx < 1 || idx > n_cols) {
             Rcpp::stop("Interact index %d out of bounds [1, %d]", 
                        static_cast<int>(idx), 
@@ -319,7 +320,18 @@ double RcppSPMI4Lattice(
         idx -= 1;  // to 0-based
     }
 
-    const size_t n_vars = v.size();
+    std::unordered_set<size_t> unique_vars;
+    unique_vars.reserve(tv.size() + iv.size());
+    for (size_t idx : tv) {
+        unique_vars.insert(idx);
+    }
+    for (size_t idx : iv) {
+        unique_vars.insert(idx);
+    }
+    std::vector<size_t> vars(unique_vars.begin(), unique_vars.end());
+    std::sort(vars.begin(), vars.end());
+
+    const size_t n_vars = vars.size();
 
     if (n_vars == 0 || n_obs == 0) {
         return std::numeric_limits<double>::quiet_NaN();
@@ -335,7 +347,7 @@ double RcppSPMI4Lattice(
     // Process each selected variable
     for (size_t j = 0; j < n_vars; ++j)
     {
-        size_t col_id = v[j];
+        size_t col_id = vars[j];
 
         // Extract column vector from R matrix
         std::vector<double> vec(n_obs);
