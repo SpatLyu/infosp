@@ -646,13 +646,6 @@ Rcpp::List RcppPID4Lattice(
         );
     }
 
-    // Construct variable index vector for MI
-    std::vector<size_t> je_tv(tv.size());
-    std::iota(je_tv.begin(), je_tv.end(), 0);
-
-    std::vector<size_t> je_iv(iv.size());
-    std::iota(je_iv.begin(), je_iv.end(), tv.size());
-
     // Compute information decomposition
     SURD::SURDRes res =
         SURD::SURD(pm, base, na_rm, normalize, 
