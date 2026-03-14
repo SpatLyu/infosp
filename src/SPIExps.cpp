@@ -707,3 +707,152 @@ Rcpp::List RcppPID4Lattice(
         Rcpp::Named("types")  = types
     );
 }
+
+// Wrapper function to calculate pattern information decomposition for spatial grid data 
+// [[Rcpp::export(rng = false)]]
+Rcpp::List RcppPID4Grid(
+    const Rcpp::NumericMatrix& mat,
+    const Rcpp::IntegerVector& target,
+    const Rcpp::IntegerVector& interact,
+    const Rcpp::List& nb,
+    const Rcpp::IntegerVector& E,
+    const Rcpp::IntegerVector& tau,
+    const Rcpp::IntegerVector& style,
+    bool relative = true,
+    double base = 2.0,
+    bool na_rm = true,
+    bool normalize = true,
+    int threads = 1,
+    int max_order = 3
+) {
+    // Basic matrix dimensions
+    const size_t n_cols = static_cast<size_t>(mat.ncol());
+    const size_t n_obs  = static_cast<size_t>(mat.nrow());
+
+    // Convert R variable indices -> C++ (0-based)
+    std::vector<size_t> iv = Rcpp::as<std::vector<size_t>>(interact);
+    for (auto& idx : iv) {
+        if (idx < 1 || idx > n_cols) {
+            Rcpp::stop("Interact index %d out of bounds [1, %d]", 
+                       static_cast<int>(idx), 
+                       static_cast<int>(n_cols));
+        }
+        idx -= 1;  // to 0-based
+    }
+    
+    const size_t target_idx = static_cast<size_t>(std::abs(target[0]));
+    if (target_idx < 1 || target_idx > n_cols) {
+        Rcpp::stop("Target index %d out of bounds [1, %d]", 
+                    static_cast<int>(target_idx), 
+                    static_cast<int>(n_cols));
+    }
+
+    std::vector<size_t> vars = std::vector<size_t>{target_idx - 1};
+    vars.insert(vars.end(), iv.begin(), iv.end());
+    const size_t n_vars = vars.size();
+
+    if (n_vars == 0 || n_obs == 0) {
+        Rcpp::stop("Empty data.");
+    }
+
+    // Convert R neighbor structure -> std::vector<std::vector<size_t>>
+    std::vector<std::vector<size_t>> nb_std = nb2std(nb);
+
+    // Pattern matrix
+    std::vector<std::vector<std::vector<uint8_t>>> pm;
+    pm.resize(n_vars);
+
+    // Process each selected variable
+    for (size_t j = 0; j < n_vars; ++j)
+    {
+        size_t col_id = vars[j];
+
+        // Extract column vector from R matrix
+        std::vector<double> vec(n_obs);
+        for (size_t r = 0; r < n_obs; ++r)
+        {
+            vec[r] = mat(r, col_id);
+        }
+
+        // Generate lattice embedding
+        std::vector<std::vector<double>> embeddings =
+            Embed::GenLatticeEmbedding(
+                vec,
+                nb_std,
+                static_cast<size_t>(std::abs(E[j])),
+                static_cast<size_t>(std::abs(tau[j])),
+                static_cast<size_t>(std::abs(style[j]))
+            );
+
+        // Convert continuous embedding -> symbolic patterns
+        pm[j] = SymDync::GenSymbolicPattern(
+            embeddings,
+            relative,
+            na_rm
+        );
+    }
+
+    // Compute information decomposition
+    SURD::SURDRes res =
+        SURD::SURD(pm, base, na_rm, normalize, 
+                   static_cast<size_t>(std::abs(threads)),
+                   static_cast<size_t>(std::abs(max_order)));
+
+    const size_t k = res.size();
+
+    Rcpp::NumericVector values(k);
+    Rcpp::CharacterVector types(k);
+    Rcpp::CharacterVector names(k);
+
+    for (size_t i = 0; i < k; ++i)
+    {
+        values[i] = res.values[i];
+
+        // variable name
+        if (res.types[i] == 3)
+        {
+            // InfoLeak uses all sources
+            std::string nm = "InfoLeak";
+            names[i] = nm;
+            types[i] = "InfoLeak";
+            continue;
+        }
+
+        const auto& var_indices = res.var_indices[i];
+
+        std::string nm;
+
+        for (size_t j = 0; j < var_indices.size(); ++j)
+        {
+            if (j > 0)
+                nm += "_";
+
+            nm += "V";
+            nm += std::to_string(var_indices[j]);
+        }
+
+        names[i] = nm;
+
+        switch (res.types[i])
+        {
+            case 0:
+                types[i] = "R";
+                break;
+            case 1:
+                types[i] = "U";
+                break;
+            case 2:
+                types[i] = "S";
+                break;
+            default:
+                types[i] = "Unknown";
+        }
+    }
+
+    values.attr("names") = names;
+
+    return Rcpp::List::create(
+        Rcpp::Named("values") = values,
+        Rcpp::Named("types")  = types
+    );
+}
