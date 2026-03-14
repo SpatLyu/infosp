@@ -860,7 +860,6 @@ Rcpp::List RcppPID4TS(
     const Rcpp::NumericMatrix& mat,
     const Rcpp::IntegerVector& target,
     const Rcpp::IntegerVector& interact,
-    const Rcpp::List& nb,
     const Rcpp::IntegerVector& E,
     const Rcpp::IntegerVector& tau,
     const Rcpp::IntegerVector& style,
@@ -901,9 +900,6 @@ Rcpp::List RcppPID4TS(
         Rcpp::stop("Empty data.");
     }
 
-    // Convert R neighbor structure -> std::vector<std::vector<size_t>>
-    std::vector<std::vector<size_t>> nb_std = nb2std(nb);
-
     // Pattern matrix
     std::vector<std::vector<std::vector<uint8_t>>> pm;
     pm.resize(n_vars);
@@ -920,11 +916,10 @@ Rcpp::List RcppPID4TS(
             vec[r] = mat(r, col_id);
         }
 
-        // Generate lattice embedding
+        // Generate temporal embedding
         std::vector<std::vector<double>> embeddings =
-            Embed::GenLatticeEmbedding(
+            Embed::GenTSEmbedding(
                 vec,
-                nb_std,
                 static_cast<size_t>(std::abs(E[j])),
                 static_cast<size_t>(std::abs(tau[j])),
                 static_cast<size_t>(std::abs(style[j]))
